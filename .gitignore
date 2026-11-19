@@ -1,0 +1,15 @@
+.DS_Store
+__pycache__/
+*.pyc
+node_modules/
+.venv/
+.env
+.env.*
+!.env.example
+.vercel/
+.netlify/
+*.log
+AIRO_IMPORT_REVIEW.txt
+# Keep any real GoDaddy export private until it is reviewed for secrets and PII.
+airo-export/
+*.zip
