@@ -4,9 +4,16 @@ Independent, deployable professional portfolio for **joshuaupshawphd.com**, with
 
 > **Important:** This repository is a working independent website implementation based on our discussed design, **not a byte-for-byte backup of the GoDaddy Airo website**. For an exact original-code backup, export your Airo project from GoDaddy, then use the importer below. The importer does not auto-commit the export.
 
+## Design reference (November 2026)
+
+The current independent implementation incorporates the visual direction from a user-provided **unpublished GoDaddy Airo HTML preview**: deep midnight navy backgrounds, cyan/blue and violet accents, elegant Playfair Display headings, Inter body typography, a framed visual hero, and dark bordered research/project cards. It does **not** depend on the Airo runtime or its analytics scripts. The reference's invented biomedical projects/publications were excluded in favor of documented research evidence.
+
+The generated pages and stylesheet are tracked in `public/`. Edit `scripts/build.py`, run the build and tests, and commit generated output alongside the generator. The hero uses a stylized monogram rather than the Airo preview's external headshot URL, because the downloaded HTML did not include that image asset.
+
 ## Pages
 
 - Home and professional introduction
+- About, scientific background, leadership perspective, and professional purpose
 - Projects with detailed case studies for Hidalga product leadership, clinical AI, and neuroscience
 - Research and peer-reviewed publications
 - Professional experience and resume overview
@@ -43,20 +50,9 @@ The importer extracts to `airo-export/` (ignored by Git until you have reviewed 
 
 Documentation: [GoDaddy project export](https://www.godaddy.com/help/download-my-airo-ai-builder-files-and-code-42993).
 
-## GitHub repository creation and push
+## GitHub repository and deployment
 
-This project has an initial **local Git commit**. A remote repository must be created in the connected GitHub account before pushing, because `jupshaw/joshua-upshaw-phd-website` did not exist at preparation time.
-
-1. On GitHub, create a repository named `joshua-upshaw-phd-website` (without initializing a README, license, or .gitignore).
-2. From the project folder, run:
-
-```bash
-git remote add origin https://github.com/jupshaw/joshua-upshaw-phd-website.git
-git branch -M main
-git push -u origin main
-```
-
-Or restore the included local commit using the separately downloadable `.bundle` file.
+Source lives at [jupshaw/joshua-upshaw-phd-website](https://github.com/jupshaw/joshua-upshaw-phd-website). GitHub Actions builds and deploys changes to `main` to the temporary GitHub Pages URL when Pages is enabled: [jupshaw.github.io/joshua-upshaw-phd-website](https://jupshaw.github.io/joshua-upshaw-phd-website/). This preview does not alter GoDaddy DNS.
 
 ## Deploy independently of GoDaddy
 
