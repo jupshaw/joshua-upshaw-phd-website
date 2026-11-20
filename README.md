@@ -12,12 +12,20 @@ The site uses Python's standard library to generate static HTML, plus standard C
 - **Research:** peer-reviewed publications, dissertation, and scholarly work
 - **Resume:** experience, education, selected credentials, and printable overview
 - **Expertise:** capabilities, evidence, and collaboration interests
-- **Contact:** professional email, LinkedIn, GitHub portfolio, and Google Scholar
+- **Contact:** inquiry form, short virtual meeting requests, professional email, LinkedIn, GitHub portfolio, and Google Scholar
 
 ## Contact
 
 **Joshua Upshaw, PhD**  
 Email: [joshua@joshuaupshawphd.com](mailto:joshua@joshuaupshawphd.com)
+
+## Contact and virtual meetings
+
+The [Contact page](https://joshuaupshawphd.com/contact/) offers a professional inquiry form and 15- or 30-minute virtual meeting requests. Suggested meeting hours are Monday through Friday, 9:00 AM to 5:00 PM US Central. The site uses [FormSubmit](https://formsubmit.co/) to deliver inquiries to **joshua@joshuaupshawphd.com**. The recipient must activate this form service from a first test submission before relying on delivery.
+
+Meeting requests are **not confirmed appointments** and do not check live calendar availability. To enable genuine self-booking, configure public 15- and 30-minute meeting types in Microsoft Bookings and set their URLs in `scripts/page_sections/contact.html`. The page then opens the applicable live calendar, while keeping the meeting-request form as a fallback.
+
+See [Contact form and booking setup](docs/CONTACT_AND_BOOKING.md) for activation, schedule defaults, testing, privacy considerations, and connecting Microsoft Bookings.
 
 ## Build locally
 
@@ -72,7 +80,7 @@ Do not change mail-related MX, SPF, DKIM, DMARC, or domain verification records 
 ## Repository structure
 
 - `scripts/build.py`: page definitions, shared templates, and asset generation
-- `scripts/page_sections/`: individual content sections and responsive styling for five inner pages
+- `scripts/page_sections/`: individual content sections and responsive styling for the inner pages, including contact and meeting forms
 - `scripts/check_site.py`: HTML/link smoke tests
 - `public/`: generated static website
 - `docs/`: operational and content notes
