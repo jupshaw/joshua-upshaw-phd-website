@@ -54,6 +54,7 @@ function validateMeeting(value) {
   const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(date);
   if (!match) return null;
   const candidate = Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
+  if (!Number.isFinite(candidate)) return null;
   if (new Date(candidate).toISOString().slice(0, 10) !== date) return null;
   const days = (candidate - centralTodayUTC()) / 86_400_000;
   if (days < 1 || days > 45 || [0, 6].includes(new Date(candidate).getUTCDay())) return null;
