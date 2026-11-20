@@ -1,5 +1,4 @@
-/* Airo-inspired inner-page layout: original implementation based on the
-   user-supplied saved HTML pages. No Airo runtime or tracking dependencies. */
+/* Original responsive inner-page styling for the professional portfolio. */
 :root{--av-night:#0b172c;--av-card:#14253d;--av-raised:#122139;--av-ink:#f1f6ff;--av-muted:#bfcee0;--av-blue:#4cc7f9;--av-purple:#aa87fa;--av-border:rgba(122,158,206,.24)}
 .av-hero,.av-section,.av-metrics-band{color:var(--av-ink);font-family:'Inter',Arial,sans-serif}
 .av-hero{position:relative;overflow:hidden;background:radial-gradient(ellipse 44% 90% at 93% 6%,rgba(145,87,237,.19),transparent 75%),radial-gradient(ellipse 45% 85% at 11% 78%,rgba(43,181,244,.12),transparent 75%),var(--av-night);border-bottom:1px solid var(--av-border);padding:100px 0 102px}

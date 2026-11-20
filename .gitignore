@@ -9,7 +9,4 @@ node_modules/
 .vercel/
 .netlify/
 *.log
-AIRO_IMPORT_REVIEW.txt
-# Keep any real GoDaddy export private until it is reviewed for secrets and PII.
-airo-export/
 *.zip

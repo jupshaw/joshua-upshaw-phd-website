@@ -80,7 +80,7 @@ PAGES['/expertise/'] = dict(title='Expertise & Collaboration | Joshua Upshaw, Ph
 
 PAGES['/contact/'] = dict(title='Contact | Joshua Upshaw, PhD', description='Connect with Joshua Upshaw, PhD about healthcare AI, research, clinical data science, and product innovation.', content='''
 <section class="page-hero dark-section"><div class="container"><p class="eyebrow light">CONNECT</p><h1>Let's start a <span class="gradient-text">conversation.</span></h1><p>Interested in scientific research, healthcare AI, product innovation, or interdisciplinary problem-solving? I'd welcome a thoughtful introduction.</p></div></section>
-<section class="section"><div class="container contact-layout"><div><p class="eyebrow">REACH OUT</p><h2>Meaningful work begins with a good question.</h2><p>For professional opportunities, research discussions, or collaborations, connect through one of the channels below.</p></div><div class="contact-options"><a href="mailto:jupshaw2010@gmail.com" class="contact-option"><div><span>Email</span><strong>jupshaw2010@gmail.com</strong></div><span aria-hidden="true">↗</span></a><a href="https://www.linkedin.com/in/joshua-upshaw-ph-d/" target="_blank" rel="noopener noreferrer" class="contact-option"><div><span>Professional profile</span><strong>LinkedIn</strong></div><span aria-hidden="true">↗</span></a><a href="https://github.com/jupshaw/joshua-upshaw-research-development-portfolio" target="_blank" rel="noopener noreferrer" class="contact-option"><div><span>Research and development</span><strong>GitHub portfolio</strong></div><span aria-hidden="true">↗</span></a><a href="https://scholar.google.com/citations?user=XAe-ESMAAAAJ&hl=en" target="_blank" rel="noopener noreferrer" class="contact-option"><div><span>Academic scholarship</span><strong>Google Scholar</strong></div><span aria-hidden="true">↗</span></a></div></div></section>
+<section class="section"><div class="container contact-layout"><div><p class="eyebrow">REACH OUT</p><h2>Meaningful work begins with a good question.</h2><p>For professional opportunities, research discussions, or collaborations, connect through one of the channels below.</p></div><div class="contact-options"><a href="mailto:joshua@joshuaupshawphd.com" class="contact-option"><div><span>Email</span><strong>joshua@joshuaupshawphd.com</strong></div><span aria-hidden="true">↗</span></a><a href="https://www.linkedin.com/in/joshua-upshaw-ph-d/" target="_blank" rel="noopener noreferrer" class="contact-option"><div><span>Professional profile</span><strong>LinkedIn</strong></div><span aria-hidden="true">↗</span></a><a href="https://github.com/jupshaw/joshua-upshaw-research-development-portfolio" target="_blank" rel="noopener noreferrer" class="contact-option"><div><span>Research and development</span><strong>GitHub portfolio</strong></div><span aria-hidden="true">↗</span></a><a href="https://scholar.google.com/citations?user=XAe-ESMAAAAJ&hl=en" target="_blank" rel="noopener noreferrer" class="contact-option"><div><span>Academic scholarship</span><strong>Google Scholar</strong></div><span aria-hidden="true">↗</span></a></div></div></section>
 ''')
 
 CSS = r'''@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@400;600;700&display=swap');
@@ -89,9 +89,7 @@ CSS = r'''@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;5
 '''
 
 CSS += r'''
-/* Airo-inspired design system, adapted for an independent evidence-grounded site.
-   Reference: supplied unpublished Airo HTML, November 2026.
-   No Airo runtime, tracking scripts, or unverified portfolio claims are imported. */
+/* Independent scientific portfolio visual design with accessible dark-mode styling. */
 :root{--ink:#eef4ff;--night:#0b172c;--navy:#0e1d34;--card:#14243d;--card-hover:#1a2d4b;--sky:#38bcf5;--violet:#9668ec;--muted:#aebcd3;--line-dark:#29415d;--cyan-glow:rgba(56,188,245,.17)}
 html{scroll-behavior:smooth;scroll-padding-top:86px}
 body{background:var(--night);color:var(--ink);font-family:'Inter','DM Sans',Arial,sans-serif}
@@ -150,18 +148,18 @@ h1{letter-spacing:-.048em}a{transition:color .2s,background .2s,border-color .2s
 
 '''
 
-# Page-specific designs reconstructed from the five user-supplied Airo HTML captures.
+# Modular inner-page content, loaded from version-controlled page sections.
 # Keep the original structured site generator, SEO metadata, and navigation.
-AIRO_PAGE_FILES = {
+PAGE_SECTIONS = {
     '/about/': 'about.html',
     '/projects/': 'projects.html',
     '/research/': 'research.html',
     '/resume/': 'resume.html',
     '/expertise/': 'expertise.html',
 }
-for route, filename in AIRO_PAGE_FILES.items():
-    PAGES[route]['content'] = (ROOT / 'scripts' / 'airo_pages' / filename).read_text(encoding='utf-8')
-CSS += '\n' + (ROOT / 'scripts' / 'airo_pages' / 'styles.css').read_text(encoding='utf-8')
+for route, filename in PAGE_SECTIONS.items():
+    PAGES[route]['content'] = (ROOT / 'scripts' / 'page_sections' / filename).read_text(encoding='utf-8')
+CSS += '\n' + (ROOT / 'scripts' / 'page_sections' / 'styles.css').read_text(encoding='utf-8')
 
 JS = r'''(() => { const button=document.querySelector('[data-menu-toggle]'); const nav=document.getElementById('primary-nav'); if(button && nav){button.addEventListener('click',()=>{const open=button.getAttribute('aria-expanded')==='true';button.setAttribute('aria-expanded',String(!open));nav.classList.toggle('is-open',!open);});document.addEventListener('keydown',e=>{if(e.key==='Escape'){button.setAttribute('aria-expanded','false');nav.classList.remove('is-open');}});}const year=document.querySelector('[data-year]');if(year)year.textContent=String(new Date().getFullYear());})();'''
 
