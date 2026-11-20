@@ -44,6 +44,32 @@ def test():
             candidate=(OUT/path.lstrip('/')) if path.startswith('/') else (page.parent/path)
             if candidate.is_dir():candidate=candidate/'index.html'
             if not candidate.is_file():errors.append(f'{page}: broken local link {href}')
+    # Contact-page smoke tests: both forms, delivery target, confirmation path,
+    # meeting request controls, and noindexed submission confirmation.
+    contact = (OUT / 'contact' / 'index.html').read_text(encoding='utf-8')
+    thanks = (OUT / 'contact' / 'thanks' / 'index.html').read_text(encoding='utf-8')
+    for label, needle in {
+        'professional contact email': 'mailto:joshua@joshuaupshawphd.com',
+        'contact form endpoint': 'action="https://formsubmit.co/joshua@joshuaupshawphd.com"',
+        'contact form field': 'id="inquiry-message"',
+        'meeting selection 15': 'data-meeting-duration="15"',
+        'meeting selection 30': 'data-meeting-duration="30"',
+        'meeting date field': 'id="meeting-date"',
+        'meeting time field': 'id="meeting-time"',
+        'confirmation destination': 'https://joshuaupshawphd.com/contact/thanks/',
+        'meeting request disclaimer': 'not a confirmed reservation',
+    }.items():
+        if needle not in contact:
+            errors.append(f'contact page: missing {label}')
+    if contact.count('action="https://formsubmit.co/joshua@joshuaupshawphd.com"') != 2:
+        errors.append('contact page: expected exactly two delivery forms')
+    if 'jupshaw2010@gmail.com' in contact:
+        errors.append('contact page: deprecated email address found')
+    if '<meta name="robots" content="noindex,follow">' not in thanks:
+        errors.append('contact confirmation: expected noindex directive')
+    script = (OUT / 'assets' / 'site.js').read_text(encoding='utf-8')
+    if 'chicagoToday' not in script or 'validateDate' not in script:
+        errors.append('meeting requests: missing Central Time date validation')
     if errors:
         print('FAIL\n'+'\n'.join(errors));return 1
     print(f'PASS: validated {len(pages)} HTML pages; no broken internal links.')
