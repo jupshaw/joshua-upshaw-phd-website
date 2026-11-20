@@ -10,3 +10,17 @@ node_modules/
 .netlify/
 *.log
 *.zip
+
+# Store operational guidance, private notes, exports, and credentials outside this public repository.
+private/
+internal/
+ops/
+secrets/
+*.pem
+*.p12
+*.pfx
+*.key
+*.sqlite
+*.db
+credentials*.json
+service-account*.json
