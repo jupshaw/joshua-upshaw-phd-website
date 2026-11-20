@@ -101,6 +101,7 @@
           throw new Error(response.status === 429 ? "Too many requests. Try again shortly." :
             typeof result.message === "string" ? result.message : "The form could not be delivered.");
         }
+        window.siteAnalytics?.track(entry.type === "meeting" ? "meeting_request_sent" : "contact_inquiry_sent");
         window.location.assign("/contact/thanks/");
         return;
       } catch (error) {
