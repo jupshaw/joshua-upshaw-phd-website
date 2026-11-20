@@ -28,6 +28,8 @@ jobs:
           home=Path("public/index.html").read_text(encoding="utf-8")
           research=Path("public/research/index.html").read_text(encoding="utf-8")
           assert 'data-ga4-id="G-TEST1234"' in home
+          assert 'data-gtm-id="GTM-P84JWK5G"' in home
+          assert 'src="https://www.googletagmanager.com/gtm.js' not in home
           assert 'data-analytics-choice="accepted"' in home
           assert 'data-analytics-choice="declined"' in home
           assert 'src="https://www.googletagmanager.com/gtag/js' not in home
@@ -39,3 +41,4 @@ jobs:
         with:
           node-version: '22'
       - run: node --test serverless/contact-worker/tests/*.test.mjs
+      - run: node --test scripts/tests/*.test.mjs
