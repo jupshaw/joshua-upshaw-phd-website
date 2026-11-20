@@ -60,87 +60,87 @@ h1{letter-spacing:-.048em}a{transition:color .2s,background .2s,border-color .2s
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.project-card:hover,.button.primary:hover{transform:none}}
 
 
-/* Professional contact and meeting-request layouts */
-.contact-page-hero{padding-bottom:87px}
-.contact-page-hero .av-hero-lede{max-width:810px}
-.contact-hero-actions{display:flex;gap:13px;flex-wrap:wrap;justify-content:center;margin:30px 0 0}
-.contact-availability{display:flex;justify-content:center;align-items:center;gap:10px;color:#a8c0d9;font:.79rem/1.6 'Inter',sans-serif;margin:28px auto 0;letter-spacing:.015em}
-.contact-status-dot{width:7px;height:7px;flex:0 0 7px;border-radius:50%;background:#66d4f6;box-shadow:0 0 0 4px rgba(94,211,249,.10)}
-.contact-main-section{padding-top:88px;padding-bottom:104px}
-.contact-main-grid{display:grid;grid-template-columns:minmax(0,1.32fr) minmax(280px,.8fr);align-items:start;gap:23px}
-.contact-surface{background:#13243b;border:1px solid #304a68;border-radius:15px;min-width:0;box-shadow:0 14px 48px rgba(2,13,31,.10)}
-.contact-form-shell{padding:33px 36px 39px;border-top:3px solid #5acaf6}
-.contact-surface-head{display:flex;align-items:center;gap:17px;margin-bottom:26px;padding-bottom:24px;border-bottom:1px solid #2e4761}
-.contact-surface-head h3{font:600 1.5rem/1.3 'Playfair Display',serif;color:#fafcff;margin:0 0 3px}
-.contact-surface-head p{color:#b4c5db;font-size:.85rem;margin:0}
-.contact-icon{width:53px;height:53px;display:grid;place-items:center;flex-shrink:0;color:#8bddff;font-size:1.55rem;border:1px solid #34658c;border-radius:12px;background:#1a3a56}
-.contact-form{display:grid;gap:21px}
-.contact-fields-two{display:grid;grid-template-columns:1fr 1fr;gap:17px}
-.contact-field{display:grid;align-content:start;gap:9px;min-width:0}
-.contact-field label{color:#e3eefa;font:600 .82rem/1.5 'Inter',sans-serif}
-.contact-field label>span:not(.contact-optional){color:#85d9ff}
-.contact-optional{font-weight:400;color:#91a5bd}
-.contact-field input,.contact-field select,.contact-field textarea{display:block;width:100%;max-width:100%;min-width:0;border:1px solid #47627d;border-radius:8px;background:#091a2e;color:#eaf3ff;font:400 .9rem/1.55 'Inter',sans-serif;padding:12px 13px;min-height:47px;transition:border-color .16s,box-shadow .16s}
-.contact-field textarea{min-height:128px;resize:vertical}
-.contact-field input::placeholder,.contact-field textarea::placeholder{color:#8398b2;opacity:1}
-.contact-field input:focus,.contact-field textarea:focus,.contact-field select:focus{outline:none;border-color:#72d3fb;box-shadow:0 0 0 3px rgba(87,197,240,.17)}
-.contact-field input:focus-visible,.contact-field textarea:focus-visible,.contact-field select:focus-visible{outline:2px solid #86ddff;outline-offset:2px}
-.contact-field select{cursor:pointer;color-scheme:dark}
-.contact-field input[type=date]{color-scheme:dark}
-.contact-field small{display:block;font-size:.74rem;color:#92a9c1;line-height:1.5}
-.contact-honey{position:absolute!important;width:1px!important;height:1px!important;opacity:0!important;pointer-events:none!important;overflow:hidden!important;left:-10000px!important}
-.contact-privacy{color:#9db2cb!important;font:400 .76rem/1.65 'Inter',sans-serif!important;margin:-3px 0 -2px}
-.contact-privacy a{color:#87d7f9;text-decoration:underline;text-underline-offset:3px}
-.contact-submit{justify-self:start;min-width:166px;padding:14px 23px}
-.contact-direct-panel{padding:34px 28px}
-.contact-direct-panel h3{font-size:1.48rem;margin:11px 0 25px}
+/* Contact page: focused layout for inquiry and virtual meeting requests */
+.contact-hero{padding:77px 0 78px;background:radial-gradient(ellipse 48% 92% at 90% 11%,rgba(134,83,226,.16),transparent 80%),radial-gradient(ellipse 45% 90% at 10% 92%,rgba(52,186,244,.09),transparent 76%),#0c192d}
+.contact-hero-inner{display:grid;grid-template-columns:minmax(0,1.36fr) minmax(260px,.64fr);gap:75px;align-items:center}
+.contact-hero h1{font-size:clamp(3.2rem,6vw,5.3rem);margin:12px 0 17px;letter-spacing:-.05em}
+.contact-hero-lede{max-width:660px;color:#c0cee0;font-size:1.07rem;line-height:1.83;margin:0}
+.contact-hero-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:29px}
+.contact-hero-aside{border-left:1px solid #35506f;padding:15px 0 15px 30px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.contact-hero-aside-label{color:#7ed8ff;font:.7rem/1.3 'Inter',sans-serif;font-weight:750;letter-spacing:.17em}
+.contact-hero-aside>a{font:600 .93rem/1.6 'Inter',sans-serif;color:#f6faff;text-decoration:none;overflow-wrap:anywhere}
+.contact-hero-aside>a span{color:#70cdfb;font-size:1.2rem;margin-left:4px}
+.contact-hero-aside>a:hover{color:#82d9ff}
+.contact-hero-aside>span:last-child{color:#98acc7;font:.81rem/1.6 'Inter',sans-serif}
+.contact-section{padding:81px 0 88px;background:#0b172c;scroll-margin-top:80px}
+.contact-section-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(240px,.61fr);gap:55px;align-items:end;margin-bottom:29px}
+.contact-section-head h2{font-size:clamp(2.05rem,3.1vw,2.8rem);margin:7px 0 0;line-height:1.2}
+.contact-section-head>p{font-size:.93rem;line-height:1.7;color:#adc0d7;margin:0 0 4px}
+.contact-main-grid{display:grid;grid-template-columns:minmax(0,1.33fr) minmax(255px,.68fr);gap:22px;align-items:start}
+.contact-panel{min-width:0;border:1px solid #314963;border-radius:14px;background:#14253d}
+.contact-form-panel{padding:34px 35px 32px;border-top:2px solid #65cef6}
+.contact-form{display:grid;gap:19px}
+.contact-fields-two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:17px}
+.contact-field{display:flex;flex-direction:column;gap:7px;min-width:0}
+.contact-field label{font:600 .82rem/1.5 'Inter',sans-serif;color:#ddeafa}
+.contact-field label span:not(.contact-optional){color:#88daff}
+.contact-optional{font:400 .73rem/1.3 'Inter',sans-serif;color:#9fb2c9;margin-left:4px}
+.contact-field :is(input,select,textarea){box-sizing:border-box;display:block;width:100%;max-width:100%;min-width:0;margin:0;border:1px solid #405976;border-radius:8px;background:#0d1b30;color:#f1f6ff;font:400 .87rem/1.55 'Inter',sans-serif;padding:12px 13px;min-height:46px;box-shadow:none}
+.contact-field textarea{resize:vertical;min-height:116px}
+.contact-field :is(input,textarea)::placeholder{color:#8d9fb6;opacity:1}
+.contact-field :is(input,select,textarea):focus{border-color:#78d4ff;outline:2px solid rgba(83,196,249,.38);outline-offset:1px}
+.contact-field select,.contact-field input[type=date]{color-scheme:dark}
+.contact-field small{color:#8da6bf;font:.72rem/1.45 'Inter',sans-serif}
+.contact-honey{position:absolute!important;left:-10000px!important;top:auto!important;opacity:0!important;height:1px!important;width:1px!important;pointer-events:none!important}
+.contact-form-footer{border-top:1px solid #2d4660;padding-top:19px;margin-top:1px;display:flex;gap:22px;align-items:center;justify-content:space-between}
+.contact-privacy{font:400 .75rem/1.6 'Inter',sans-serif!important;color:#a1b3c9!important;max-width:430px;margin:0}
+.contact-privacy a{color:#7acffc;text-underline-offset:3px;text-decoration:underline}
+.contact-submit{white-space:nowrap;flex-shrink:0;padding:13px 21px;font-size:.85rem}
+.contact-links-panel{padding:34px 28px}
+.contact-links-panel h3{font:600 1.55rem/1.3 'Playfair Display',Georgia,serif;color:#fbfcff;margin:8px 0 21px}
 .contact-direct-list{display:grid}
-.contact-direct-list>a{display:grid;grid-template-columns:40px minmax(0,1fr) 14px;gap:12px;align-items:center;padding:18px 0;color:#dfeefe;border-bottom:1px solid #2e4964;text-decoration:none;transition:background .17s,color .17s}
-.contact-direct-list>a:first-child{border-top:1px solid #2e4964}
-.contact-direct-list>a:hover strong{color:#9bddff}
-.contact-direct-list a>span:nth-child(2){min-width:0}
-.contact-direct-list small{display:block;letter-spacing:.13em;font-weight:750;font-size:.65rem;color:#78c9ee;margin-bottom:6px}
-.contact-direct-list strong{font:650 .86rem/1.45 'Inter',sans-serif;color:#f1f7ff;overflow-wrap:anywhere}
-.contact-mini-icon{height:40px;width:40px;display:grid;place-items:center;background:#1b3a57;border:1px solid #365575;border-radius:9px;color:#7ed8ff;font:bold 1rem 'Inter',sans-serif}
-.contact-aside-note{background:linear-gradient(135deg,#18405c,#29244a);border:1px solid #405e80;border-radius:11px;margin-top:28px;padding:23px 22px}
-.contact-aside-note>strong{font:600 1.13rem/1.4 'Playfair Display',serif;color:#fff}
-.contact-aside-note p{font-size:.84rem!important;color:#c9d7e8!important;line-height:1.68;margin:9px 0 0}
-.contact-aside-note a{margin-top:9px}
-.contact-meetings-section{scroll-margin-top:82px;padding-top:99px}
-.contact-meeting-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:21px}
-.contact-meeting-card{font:inherit;text-align:left;background:#14253f;border:1px solid #3c5774;border-top:3px solid #56caf8;border-radius:14px;display:flex;flex-direction:column;align-items:flex-start;gap:12px;padding:28px 29px;color:#eaf5ff;min-width:0;cursor:pointer;transition:transform .2s,border-color .2s,box-shadow .2s,background .2s}
-.contact-meeting-card:nth-child(2){border-top-color:#ab83ef}
-.contact-meeting-card:hover{transform:translateY(-3px);border-color:#7ccdf4;background:#192d4b}
-.contact-meeting-card:focus-visible{outline:3px solid #79d4fd;outline-offset:3px}
-.contact-meeting-card.is-selected{background:linear-gradient(135deg,rgba(54,123,174,.12),rgba(127,94,211,.09)),#172a45;box-shadow:0 0 0 2px rgba(113,207,252,.35),0 22px 48px rgba(0,10,28,.12);border-color:#6abfe8}
-.contact-meeting-icon{display:grid;place-items:center;width:48px;height:48px;background:#22415e;border-radius:11px;font:600 1.5rem/1 'Inter',sans-serif;color:#9be0ff;margin-bottom:3px}
-.contact-duration{font:750 2.2rem/1.05 'Inter',sans-serif;color:#f4faff}
-.contact-duration small{font:550 .93rem/1 'Inter',sans-serif;color:#a8c4df}
-.contact-meeting-card>strong{font:600 1.4rem/1.25 'Playfair Display',serif;color:#fff}
-.contact-meeting-desc{color:#bfd0e3!important;line-height:1.7;font-size:.9rem}
-.contact-meeting-type{font-size:.75rem;color:#9bb2ce;line-height:1.5;margin-top:auto;padding-top:4px}
-.contact-meeting-cta{border-top:1px solid #3b5673;padding-top:18px;width:100%;font-size:.86rem;font-weight:700;color:#86ddff;display:flex;justify-content:space-between;gap:15px;align-items:center}
-.contact-booking-layout{margin-top:28px;display:grid;grid-template-columns:minmax(0,1.47fr) minmax(250px,.62fr);gap:27px;align-items:start}
-.contact-booking-shell{padding:33px 35px 38px;border-top:2px solid #64cef8}
-.contact-booking-heading{display:flex;justify-content:space-between;align-items:center;gap:15px;border-bottom:1px solid #2c4964;padding-bottom:21px;margin-bottom:24px}
-.contact-booking-heading h3{font-size:1.45rem;margin:9px 0}
-.contact-booking-heading p:last-child{color:#b6c8dc;font-size:.85rem;margin:0}
-.contact-meeting-length{font:800 .73rem/1.3 'Inter',sans-serif;color:#b3e9ff;white-space:nowrap;background:#20405d;border-radius:20px;border:1px solid #457fa3;padding:9px 13px}
-.contact-booking-notice{background:#1a3650;border-left:3px solid #74d5fa;color:#d0e1f5!important;padding:14px 16px;border-radius:0 8px 8px 0;font:.81rem/1.66 'Inter',sans-serif!important;margin:0 0 4px}
-.contact-booking-aside{display:grid;gap:15px;padding:14px 7px}
-.contact-booking-fact{display:grid;grid-template-columns:44px minmax(0,1fr);gap:13px;align-items:start;padding:11px 0 20px;border-bottom:1px solid #36516d}
-.contact-fact-icon{width:44px;height:44px;border:1px solid #436382;background:#1d3c59;color:#96e0ff;border-radius:9px;display:grid;place-items:center;font-size:1.3rem}
-.contact-booking-fact strong{display:block;color:#f4faff;font:700 .9rem/1.5 'Inter',sans-serif;margin-bottom:5px}
-.contact-booking-fact p{font-size:.85rem!important;line-height:1.65;margin:0;color:#b9cbe0!important}
-.contact-booking-disclaimer{padding:19px 20px;border:1px solid #435d77;border-radius:10px;background:#142e47;margin-top:6px}
-.contact-booking-disclaimer strong{color:#b9e7fb;font-size:.85rem;font-weight:750}
-.contact-booking-disclaimer p{color:#bed0df!important;font-size:.8rem!important;line-height:1.7;margin:6px 0 0}
-.contact-bottom-cta{border-top:1px solid #294560}
+.contact-direct-list>a{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:16px 0;border-top:1px solid #2e455f;text-decoration:none;color:#f1f6ff;min-width:0}
+.contact-direct-list a>span:first-child{min-width:0}
+.contact-direct-list small{display:block;color:#8dabc8;font:700 .67rem/1.4 'Inter',sans-serif;letter-spacing:.1em;margin-bottom:5px}
+.contact-direct-list strong{display:block;color:#eaf4ff;font:600 .9rem/1.5 'Inter',sans-serif;overflow-wrap:anywhere}
+.contact-direct-list>a:hover strong,.contact-direct-list>a:hover .contact-external{color:#86d9fa}
+.contact-external{color:#6fadd2;font-size:1.2rem;flex-shrink:0}
+.contact-links-note{padding:19px 0 0;margin:9px 0 0;color:#a4b8cd!important;font:.83rem/1.65 'Inter',sans-serif!important;border-top:1px solid #2e455f}
+.contact-meetings-section{padding:82px 0 100px;background:#12233a;scroll-margin-top:80px}
+.contact-booking-layout{display:grid;grid-template-columns:minmax(0,.76fr) minmax(0,1.24fr);gap:23px;align-items:start}
+.contact-booking-options{display:grid;gap:21px}
+.contact-meeting-cards{display:grid;gap:13px}
+.contact-meeting-card{position:relative;display:grid;grid-template-columns:78px minmax(0,1fr) 17px;grid-template-areas:"duration details selection" "duration cta selection";align-items:start;gap:4px 15px;width:100%;text-align:left;background:#152b45;border:1px solid #3c5572;border-radius:12px;padding:22px 20px;cursor:pointer;color:#e8f1ff;font:inherit;transition:border-color .18s,background .18s,box-shadow .18s}
+.contact-meeting-card:hover{border-color:#69bfe8;background:#19324e}
+.contact-meeting-card:focus-visible{outline:3px solid #75d7ff;outline-offset:3px}
+.contact-meeting-card.is-selected{border-color:#68c9f4;box-shadow:inset 3px 0 #5dccfa;background:#193550}
+.contact-duration{grid-area:duration;color:#98bddd;font:600 .76rem/1.25 'Inter',sans-serif;display:flex;align-items:baseline;gap:4px;white-space:nowrap}
+.contact-duration strong{font:750 2.18rem/1 'Inter',sans-serif;color:#7bd5fc;letter-spacing:-.055em}
+.contact-meeting-details{grid-area:details;display:grid;gap:8px;min-width:0}
+.contact-meeting-details>strong{font:600 1.16rem/1.32 'Playfair Display',Georgia,serif;color:#f5f9ff}
+.contact-meeting-details>span{font:400 .8rem/1.65 'Inter',sans-serif;color:#b6c6db}
+.contact-selection-indicator{grid-area:selection;display:block;width:16px;height:16px;border:1.5px solid #7191ab;border-radius:50%;margin-top:3px;justify-self:end}
+.contact-meeting-card.is-selected .contact-selection-indicator{background:#64cafa;border:4px solid #2e5774;box-shadow:0 0 0 1px #81d8fb}
+.contact-meeting-cta{grid-area:cta;font:700 .74rem/1.5 'Inter',sans-serif;color:#88d9ff;margin-top:8px}
+.contact-meeting-cta>span{margin-left:4px}
+.contact-scheduling-details{padding:18px 21px;background:#102038;border:1px solid #314a66;border-radius:11px}
+.contact-scheduling-details p{display:flex;gap:7px;flex-wrap:wrap;font:400 .81rem/1.7 'Inter',sans-serif!important;color:#b9c8da!important;margin:0;padding:7px 0}
+.contact-scheduling-details p+p{border-top:1px solid rgba(106,150,192,.18)}
+.contact-scheduling-details strong{color:#e4f1ff;min-width:46px;display:inline-block;font-weight:700}
+.contact-booking-panel{padding:29px 33px 31px;border-top:2px solid #a486f3;scroll-margin-top:102px}
+.contact-booking-heading{display:flex;gap:12px;align-items:start;justify-content:space-between;margin-bottom:23px;padding-bottom:19px;border-bottom:1px solid #314961}
+.contact-booking-heading h3{font:600 1.4rem/1.3 'Playfair Display',Georgia,serif;color:#f5f9ff;margin:8px 0 0}
+.contact-meeting-length{font:700 .66rem/1.4 'Inter',sans-serif;color:#b4e6ff;border:1px solid #3f6783;border-radius:20px;background:#1c3954;white-space:nowrap;padding:7px 9px}
+.contact-booking-panel .contact-form{gap:16px}
+.contact-booking-panel textarea{min-height:91px}
+.contact-booking-notice{padding:12px 15px;margin:1px 0 0;border-left:2px solid #67c6f3;background:#1a3450;border-radius:0 7px 7px 0;font:400 .78rem/1.66 'Inter',sans-serif!important;color:#c1d8ea!important}
+.contact-booking-panel .contact-form-footer{padding-top:15px;margin-top:1px}
+.contact-booking-panel .contact-privacy{font-size:.72rem!important}
 .contact-thanks-card{max-width:760px;margin:0 auto;padding:50px;background:#162c49;border:1px solid #3c607e;border-radius:19px;text-align:center}
 .contact-thanks-card h1{color:#fff;font:600 clamp(2.1rem,5vw,3.7rem)/1.16 'Playfair Display',serif;margin:14px 0 20px}
 .contact-thanks-card>p:not(.av-kicker){color:#cbd9ea;font:400 1rem/1.8 'Inter',sans-serif}
 .contact-thanks-icon{width:68px;height:68px;margin:0 auto 20px;display:grid;place-items:center;border:1px solid #4f95b6;border-radius:100%;background:#21465e;color:#89dcf9;font-size:2rem}
-@media(max-width:990px){.contact-main-grid{grid-template-columns:1fr .8fr}.contact-form-shell{padding:26px}.contact-direct-panel{padding:27px 22px}.contact-booking-layout{grid-template-columns:1fr .65fr}.contact-booking-shell{padding:26px}}
-@media(max-width:800px){.contact-main-grid,.contact-booking-layout{grid-template-columns:1fr}.contact-booking-aside{grid-template-columns:repeat(2,minmax(0,1fr));padding:8px 0}.contact-booking-disclaimer{grid-column:1/-1}.contact-direct-panel{max-width:none}.contact-meetings-section{padding-top:72px}}
-@media(max-width:580px){.contact-page-hero{padding:69px 0}.contact-hero-actions .av-button{width:100%}.contact-availability{font-size:.74rem}.contact-fields-two,.contact-meeting-cards,.contact-booking-aside{grid-template-columns:1fr}.contact-form-shell,.contact-booking-shell,.contact-direct-panel{padding:24px 20px}.contact-meeting-card{padding:25px 22px}.contact-booking-heading{align-items:flex-start}.contact-submit{width:100%}.contact-surface-head{gap:12px}.contact-main-section{padding:66px 0}.contact-booking-aside{gap:4px}.contact-thanks-card{padding:34px 22px}.contact-meeting-length{font-size:.67rem}}
-@media(prefers-reduced-motion:reduce){.contact-meeting-card{transition:none}.contact-meeting-card:hover{transform:none}}
+@media(max-width:1050px){.contact-hero-inner{gap:32px;grid-template-columns:minmax(0,1.25fr) minmax(210px,.75fr)}.contact-main-grid{grid-template-columns:minmax(0,1.26fr) minmax(245px,.74fr)}.contact-booking-layout{grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr)}.contact-form-panel,.contact-booking-panel{padding:27px 25px}.contact-form-footer{flex-wrap:wrap;gap:15px}}
+@media(max-width:780px){.contact-hero{padding:67px 0}.contact-hero-inner{grid-template-columns:1fr;gap:30px}.contact-hero-aside{padding-left:19px}.contact-section-head{grid-template-columns:1fr;gap:11px;margin-bottom:25px}.contact-section-head>p{max-width:600px}.contact-main-grid,.contact-booking-layout{grid-template-columns:1fr}.contact-links-panel{padding:27px 25px}.contact-section{padding:65px 0}.contact-meetings-section{padding:65px 0}.contact-booking-options{gap:15px}.contact-meeting-cards{grid-template-columns:repeat(2,minmax(0,1fr))}.contact-meeting-card{grid-template-columns:1fr 16px;grid-template-areas:"duration selection" "details details" "cta cta";gap:12px}.contact-meeting-card .contact-duration{margin-bottom:1px}}
+@media(max-width:560px){.contact-hero{padding:57px 0}.contact-hero h1{font-size:3.1rem}.contact-hero-lede{font-size:.97rem}.contact-hero-actions .av-button{width:100%}.contact-hero-aside{padding-left:15px}.contact-section{padding:56px 0}.contact-section-head h2{font-size:2.1rem}.contact-fields-two,.contact-meeting-cards{grid-template-columns:1fr}.contact-form-panel,.contact-links-panel,.contact-booking-panel{padding:23px 19px}.contact-form{gap:16px}.contact-meeting-card{grid-template-columns:72px minmax(0,1fr) 16px;grid-template-areas:"duration details selection" "duration cta selection";gap:5px 9px;padding:19px 16px}.contact-meeting-card .contact-duration{margin-bottom:0}.contact-meeting-details>strong{font-size:1.13rem}.contact-meeting-details>span{font-size:.76rem}.contact-form-footer{display:grid;gap:15px}.contact-submit{width:100%}.contact-booking-heading h3{font-size:1.18rem}.contact-meeting-length{margin-top:3px}.contact-meetings-section{padding:60px 0}.contact-thanks-card{padding:34px 22px}}
+@media(prefers-reduced-motion:reduce){.contact-meeting-card{transition:none}}
