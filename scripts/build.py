@@ -11,6 +11,10 @@ ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / 'public'
 SITE = 'https://joshuaupshawphd.com'
 BASE_PATH = os.environ.get('SITE_BASE_PATH','').rstrip('/')
+GA4_ID = os.environ.get('SITE_GA4_MEASUREMENT_ID', '').strip()
+if GA4_ID and not re.fullmatch(r'G-[A-Z0-9]{4,20}', GA4_ID):
+    raise ValueError('Invalid GA4 Measurement ID')
+
 CONTACT_API_URL = os.environ.get('SITE_CONTACT_API_URL', '').strip()
 TURNSTILE_SITE_KEY = os.environ.get('SITE_TURNSTILE_SITE_KEY', '').strip()
 if bool(CONTACT_API_URL) != bool(TURNSTILE_SITE_KEY):
@@ -172,6 +176,12 @@ for route, filename in PAGE_SECTIONS.items():
     PAGES[route]['content'] = (ROOT / 'scripts' / 'page_sections' / filename).read_text(encoding='utf-8')
 CSS += '\n' + (ROOT / 'scripts' / 'page_sections' / 'styles.css').read_text(encoding='utf-8')
 CSS += '\n' + (ROOT / 'scripts' / 'page_sections' / 'contact.css').read_text(encoding='utf-8')
+CSS += '\n' + (ROOT / 'scripts' / 'page_sections' / 'analytics.css').read_text(encoding='utf-8')
+PAGES['/privacy/'] = dict(
+    title='Privacy & Analytics | Joshua Upshaw, PhD',
+    description='Information about optional website analytics, contact-form data handling, and privacy choices.',
+    content=(ROOT / 'scripts' / 'page_sections' / 'privacy.html').read_text(encoding='utf-8'),
+)
 PAGES['/contact/thanks/'] = dict(
     title='Message Submitted | Joshua Upshaw, PhD',
     description='Confirmation of an inquiry or virtual meeting request submitted through the professional website.',
@@ -182,8 +192,58 @@ JS = r'''(() => { const button=document.querySelector('[data-menu-toggle]'); con
 
 JS += '\n' + (ROOT / 'scripts' / 'page_sections' / 'contact.js').read_text(encoding='utf-8')
 JS += '\n' + (ROOT / 'scripts' / 'page_sections' / 'secure-contact.js').read_text(encoding='utf-8')
+JS += '\n' + (ROOT / 'scripts' / 'page_sections' / 'analytics.js').read_text(encoding='utf-8')
 
 FAVICON = '''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="g" x2="1" y2="1"><stop stop-color="#2c78dd"/><stop offset="1" stop-color="#9861e0"/></linearGradient></defs><rect width="64" height="64" rx="14" fill="#111d38"/><path d="M14 16h10v24c0 6-3 9-10 9v-9c1 0 2-.5 2-2V16zm17 0h10v19c0 4 2 6 5 6s5-2 5-6V16h10v20c0 9-6 15-15 15S31 45 31 36V16z" fill="url(#g)"/></svg>'''
+
+def structured_schema(path, page):
+    person_id = SITE + '/#person'
+    website_id = SITE + '/#website'
+    url = SITE + path
+    person = {
+        '@type': 'Person', '@id': person_id, 'name': 'Joshua Upshaw',
+        'honorificSuffix': 'PhD', 'url': SITE + '/about/',
+        'description': 'Cognitive neuroscientist, healthcare AI founder and clinical data scientist.',
+        'jobTitle': 'Cognitive neuroscientist and healthcare AI founder',
+        'alumniOf': {'@type': 'CollegeOrUniversity', 'name': 'University of Arkansas'},
+        'knowsAbout': ['Cognitive neuroscience', 'Clinical data science',
+                       'Healthcare artificial intelligence', 'EEG', 'Eye tracking',
+                       'Research-to-product leadership'],
+        'sameAs': [
+            'https://www.linkedin.com/in/joshua-upshaw-ph-d/',
+            'https://github.com/jupshaw/joshua-upshaw-research-development-portfolio',
+        ],
+    }
+    site = {
+        '@type': 'WebSite', '@id': website_id, 'url': SITE + '/',
+        'name': 'Joshua Upshaw, PhD', 'inLanguage': 'en',
+        'publisher': {'@id': person_id},
+    }
+    page_type = 'ProfilePage' if path == '/about/' else (
+        'CollectionPage' if path in ('/projects/', '/research/') else 'WebPage')
+    webpage = {
+        '@type': page_type, '@id': url + '#webpage', 'url': url,
+        'name': page['title'], 'description': page['description'],
+        'isPartOf': {'@id': website_id}, 'about': {'@id': person_id},
+        'inLanguage': 'en',
+    }
+    if path == '/about/':
+        webpage['mainEntity'] = {'@id': person_id}
+    graph = [person, site, webpage]
+    if path not in ('/', '/contact/thanks/'):
+        crumbs = [{'@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': SITE + '/'}]
+        partial = ''
+        parts = path.strip('/').split('/')
+        for index, segment in enumerate(parts, 2):
+            partial += segment + '/'
+            current = '/' + partial
+            label = ('Privacy' if current == '/privacy/' else
+                     PAGES.get(current, {}).get('title', segment).split(' | ')[0])
+            crumbs.append({'@type': 'ListItem', 'position': index, 'name': label,
+                           'item': SITE + current})
+        graph.append({'@type': 'BreadcrumbList', 'itemListElement': crumbs})
+    return json.dumps({'@context': 'https://schema.org', '@graph': graph},
+                      separators=(',', ':'), ensure_ascii=True).replace('</', '<\\/')
 
 for path, d in PAGES.items():
     dpath = OUT / path.lstrip('/')
@@ -192,7 +252,9 @@ for path, d in PAGES.items():
     links = ''.join(f'<a href="{href}"'+ (' aria-current="page"' if href == current else '')+f'>{label}</a>' for label,href in NAV)
     footer_links = ''.join(f'<a href="{href}">{label}</a>' for label,href in NAV)
     canonical = SITE+path
-    html = f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>{escape(d['title'])}</title><meta name="description" content="{escape(d['description'])}"><meta name="theme-color" content="#0c172e"><link rel="canonical" href="{canonical}"><link rel="icon" type="image/svg+xml" href="/assets/favicon.svg"><link rel="stylesheet" href="/assets/styles.css"><meta property="og:type" content="website"><meta property="og:site_name" content="Joshua Upshaw, PhD"><meta property="og:title" content="{escape(d['title'])}"><meta property="og:description" content="{escape(d['description'])}"><meta property="og:url" content="{canonical}"><meta name="twitter:card" content="summary"><script type="application/ld+json">{json.dumps({'@context':'https://schema.org','@type':'Person','name':'Joshua Upshaw','honorificSuffix':'PhD','url':SITE,'sameAs':['https://www.linkedin.com/in/joshua-upshaw-ph-d/','https://scholar.google.com/citations?user=XAe-ESMAAAAJ&hl=en','https://github.com/jupshaw/joshua-upshaw-research-development-portfolio']},separators=(',',':'))}</script></head><body><a class="skip-link" href="#main">Skip to main content</a><header class="site-header"><div class="container header-row"><a class="brand" href="/" aria-label="Joshua Upshaw, PhD, home"><span class="brand-mark">JU</span>Joshua Upshaw, PhD</a><button type="button" class="menu-button" aria-expanded="false" aria-controls="primary-nav" aria-label="Toggle navigation" data-menu-toggle>☰</button><nav id="primary-nav" class="site-nav" aria-label="Primary navigation">{links}</nav></div></header><main id="main">{d['content']}</main><footer class="site-footer"><div class="container"><div class="footer-grid"><div><div class="footer-logo">Joshua Upshaw, PhD</div><p class="footer-desc">Scientific research, healthcare AI, and human-centered technology informed by evidence and built for impact.</p></div><nav class="footer-nav" aria-label="Footer navigation">{footer_links}</nav></div><div class="footer-bottom"><span>© <span data-year>2026</span> Joshua Upshaw. All rights reserved.</span><span>Research · Innovation · Human impact</span></div></div></footer><script src="/assets/site.js" defer></script></body></html>'''
+    schema_json = structured_schema(path, d)
+    consent_markup = '''<aside id="analytics-consent" class="analytics-consent" role="region" aria-labelledby="analytics-consent-title" hidden><h2 id="analytics-consent-title">Optional website analytics</h2><p>With your permission, this site uses Google Analytics to measure visits and improve the portfolio. You can change your choice at any time. <a href="/privacy/">Privacy details</a>.</p><div class="analytics-consent-actions"><button type="button" data-analytics-choice="declined">Decline</button><button type="button" data-analytics-choice="accepted">Allow analytics</button></div></aside>''' if GA4_ID else ''
+    html = f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>{escape(d['title'])}</title><meta name="description" content="{escape(d['description'])}"><meta name="theme-color" content="#0c172e"><link rel="canonical" href="{canonical}"><link rel="icon" type="image/svg+xml" href="/assets/favicon.svg"><link rel="stylesheet" href="/assets/styles.css"><meta property="og:type" content="website"><meta property="og:site_name" content="Joshua Upshaw, PhD"><meta property="og:title" content="{escape(d['title'])}"><meta property="og:description" content="{escape(d['description'])}"><meta property="og:url" content="{canonical}"><meta name="twitter:card" content="summary"><script type="application/ld+json">{schema_json}</script></head><body data-ga4-id="{escape(GA4_ID, quote=True)}"><a class="skip-link" href="#main">Skip to main content</a><header class="site-header"><div class="container header-row"><a class="brand" href="/" aria-label="Joshua Upshaw, PhD, home"><span class="brand-mark">JU</span>Joshua Upshaw, PhD</a><button type="button" class="menu-button" aria-expanded="false" aria-controls="primary-nav" aria-label="Toggle navigation" data-menu-toggle>☰</button><nav id="primary-nav" class="site-nav" aria-label="Primary navigation">{links}</nav></div></header><main id="main">{d['content']}</main><footer class="site-footer"><div class="container"><div class="footer-grid"><div><div class="footer-logo">Joshua Upshaw, PhD</div><p class="footer-desc">Scientific research, healthcare AI, and human-centered technology informed by evidence and built for impact.</p></div><nav class="footer-nav" aria-label="Footer navigation">{footer_links}</nav></div><div class="footer-bottom"><span>© <span data-year>2026</span> Joshua Upshaw. All rights reserved.</span><span>Research · Innovation · Human impact</span><span><a href="/privacy/">Privacy</a> {'<button type="button" class="analytics-settings" data-analytics-settings>Analytics preferences</button>' if GA4_ID else ''}</span></div></div></footer>{consent_markup}<script src="/assets/site.js" defer></script></body></html>'''
     if path == '/contact/':
         attrs = (' data-secure-contact-api="' + escape(CONTACT_API_URL, quote=True) + '"'
                  ' data-turnstile-sitekey="' + escape(TURNSTILE_SITE_KEY, quote=True) + '"')
