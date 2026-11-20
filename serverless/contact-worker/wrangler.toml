@@ -1,0 +1,13 @@
+name = "joshua-upshaw-contact"
+main = "src/worker.mjs"
+compatibility_date = "2026-11-19"
+workers_dev = true
+
+# Approximate per-IP rate limiting by Cloudflare location.
+[[ratelimits]]
+name = "CONTACT_RATE_LIMIT"
+namespace_id = "17438"
+
+[ratelimits.simple]
+limit = 5
+period = 60
