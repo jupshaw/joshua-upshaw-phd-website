@@ -7,7 +7,7 @@
   const useGA4Fallback = !useTagManager && /^G-[A-Z0-9]{4,20}$/.test(ga4Id);
   if (!useTagManager && !useGA4Fallback) return;
 
-  const KEY = "jup_analytics_consent_v1";
+  const KEY = "jup_analytics_consent_v2";
   const banner = document.getElementById("analytics-consent");
   const choices = document.querySelectorAll("[data-analytics-choice]");
   const settings = document.querySelectorAll("[data-analytics-settings]");
