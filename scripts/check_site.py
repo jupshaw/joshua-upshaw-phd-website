@@ -84,7 +84,7 @@ def test():
         if page.name == '404.html':
             continue
         html=page.read_text(encoding='utf-8')
-        match=re.search(r'<script type="application/ld\\+json">(.*?)</script>',html)
+        match=re.search(r'<script type="application/ld\+json">(.*?)</script>',html)
         if not match:
             errors.append(f'{page}: missing structured JSON-LD')
             continue
