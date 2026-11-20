@@ -1,11 +1,13 @@
-/* Consent-first Google Tag Manager; GA4 gtag.js retained only as a fallback. */
+/* Consent-first direct GA4; GTM is a standby fallback to prevent duplicate pageview reporting. */
 (() => {
   "use strict";
   const ga4Id = document.body?.dataset.ga4Id || "";
   const containerId = document.body?.dataset.gtmId || "";
-  const useTagManager = /^GTM-[A-Z0-9]{6,15}$/.test(containerId);
-  const useGA4Fallback = !useTagManager && /^G-[A-Z0-9]{4,20}$/.test(ga4Id);
-  if (!useTagManager && !useGA4Fallback) return;
+  // Exactly one Google tag loader per page. Direct GA4 is preferred when supplied.
+  // This avoids counting the same page view via both GTM and a direct Google tag.
+  const useDirectGA4 = /^G-[A-Z0-9]{4,20}$/.test(ga4Id);
+  const useTagManager = !useDirectGA4 && /^GTM-[A-Z0-9]{6,15}$/.test(containerId);
+  if (!useDirectGA4 && !useTagManager) return;
 
   const KEY = "jup_analytics_consent_v2";
   const banner = document.getElementById("analytics-consent");
@@ -45,7 +47,7 @@
       window.dataLayer.push({ "gtm.start": Date.now(), event: "gtm.js" });
       tag.src = "https://www.googletagmanager.com/gtm.js?id=" + encodeURIComponent(containerId);
     } else {
-      // Fallback for a future site that uses direct GA4 without GTM.
+      // Direct GA4 is the active Google tag. GTM is deliberately not loaded.
       window.gtag("config", ga4Id, {
         page_location: location.origin + location.pathname,
         allow_google_signals: false,

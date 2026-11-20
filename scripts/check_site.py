@@ -117,8 +117,9 @@ def test():
         errors.append('Confirmation page unexpectedly indexed')
     home=(OUT/'index.html').read_text(encoding='utf-8')
     script=(OUT/'assets'/'site.js').read_text(encoding='utf-8')
-    if 'data-ga4-id="' not in home or 'data-analytics-settings' not in script:
-        errors.append('Analytics consent-ready integration missing')
+    expected_ga4 = (os.environ.get('SITE_GA4_MEASUREMENT_ID') or 'G-ZCZ7BZ77CW').strip()
+    if f'data-ga4-id="{expected_ga4}"' not in home or 'data-analytics-settings' not in script:
+        errors.append('Configured GA4 Measurement ID or consent-ready integration missing')
     if 'data-gtm-id="GTM-P84JWK5G"' not in home:
         errors.append('Expected supplied GTM container configuration missing')
     if 'googletagmanager.com/gtm.js?id=' not in script or 'useTagManager' not in script:

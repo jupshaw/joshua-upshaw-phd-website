@@ -14,7 +14,7 @@ BASE_PATH = os.environ.get('SITE_BASE_PATH','').rstrip('/')
 GTM_CONTAINER_ID = (os.environ.get('SITE_GTM_CONTAINER_ID') or 'GTM-P84JWK5G').strip()
 if not re.fullmatch(r'GTM-[A-Z0-9]{6,15}', GTM_CONTAINER_ID):
     raise ValueError('Invalid Google Tag Manager container ID')
-GA4_ID = os.environ.get('SITE_GA4_MEASUREMENT_ID', '').strip()
+GA4_ID = (os.environ.get('SITE_GA4_MEASUREMENT_ID') or 'G-ZCZ7BZ77CW').strip()
 if GA4_ID and not re.fullmatch(r'G-[A-Z0-9]{4,20}', GA4_ID):
     raise ValueError('Invalid GA4 Measurement ID')
 

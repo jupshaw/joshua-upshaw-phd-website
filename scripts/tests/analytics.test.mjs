@@ -116,3 +116,40 @@ test("GA4-only fallback remains available when no GTM container is configured", 
   assert.equal(s.scripts[0].src, "https://www.googletagmanager.com/gtag/js?id=G-TEST1234");
   assert.equal(s.window.dataLayer.some(x => x?.[0] === "config" && x?.[1] === "G-TEST1234"), true);
 });
+
+
+test("supplied GA4 measurement ID takes precedence over existing GTM to avoid duplicate hits", () => {
+  const s = site({ gtm: "GTM-P84JWK5G", ga4: "G-ZCZ7BZ77CW" });
+  assert.equal(s.scripts.length, 0, "no Google code loads before consent");
+  s.accept();
+  assert.equal(s.scripts.length, 1, "load only one Google library");
+  assert.equal(s.scripts[0].src,
+    "https://www.googletagmanager.com/gtag/js?id=G-ZCZ7BZ77CW");
+  assert.equal(s.scripts.some(x => x.src.includes("gtm.js")), false);
+  const config = s.window.dataLayer.filter(x => x?.[0] === "config");
+  assert.equal(config.length, 1);
+  assert.equal(config[0][1], "G-ZCZ7BZ77CW");
+  assert.equal(config[0][2].allow_google_signals, false);
+  assert.equal(config[0][2].allow_ad_personalization_signals, false);
+});
+
+test("direct GA4 keeps non-personal custom events and respects consent", () => {
+  const s = site({ gtm: "GTM-P84JWK5G", ga4: "G-ZCZ7BZ77CW" });
+  s.window.siteAnalytics.track("contact_inquiry_sent", { email: "private@example.com" });
+  assert.equal(s.window.dataLayer, undefined);
+  s.accept();
+  s.window.siteAnalytics.track("meeting_request_sent", { email: "private@example.com" });
+  s.window.siteAnalytics.track("meeting_duration_selected", { duration: "15", secret: "do-not-send" });
+  const events=s.window.dataLayer.filter(v=>v?.[0]==="event");
+  assert.equal(events.length, 2);
+  assert.equal(events[0][1], "meeting_request_sent");
+  assert.equal(events[1][2].meeting_minutes, 15);
+  assert.equal(JSON.stringify(events).includes("private@example.com"), false);
+  assert.equal(JSON.stringify(events).includes("do-not-send"), false);
+});
+
+test("direct GA4 does not load for a declined visitor", () => {
+  const s = site({ storedConsent: "declined", gtm: "GTM-P84JWK5G", ga4: "G-ZCZ7BZ77CW" });
+  assert.equal(s.scripts.length, 0);
+  assert.equal(s.window.dataLayer, undefined);
+});
