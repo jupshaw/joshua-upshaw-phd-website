@@ -16,6 +16,8 @@ jobs:
     env:
       # Custom-domain deployment serves from the domain root, not the repository subpath.
       SITE_BASE_PATH: /
+      SITE_CONTACT_API_URL: ${{ vars.SITE_CONTACT_API_URL }}
+      SITE_TURNSTILE_SITE_KEY: ${{ vars.SITE_TURNSTILE_SITE_KEY }}
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
