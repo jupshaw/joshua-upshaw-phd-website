@@ -212,6 +212,7 @@ def structured_schema(path, page):
         'sameAs': [
             'https://www.linkedin.com/in/joshua-upshaw-ph-d/',
             'https://github.com/jupshaw/joshua-upshaw-research-development-portfolio',
+            'https://orcid.org/0000-0003-3119-9764',
         ],
     }
     site = {
@@ -230,6 +231,22 @@ def structured_schema(path, page):
     if path == '/about/':
         webpage['mainEntity'] = {'@id': person_id}
     graph = [person, site, webpage]
+    if path == '/research/':
+        # Verified first-author journal articles. The page links to each DOI.
+        for headline, doi, year in (
+            ('Electrophysiological effects of smartphone notifications on cognitive control following a brief mindfulness induction',
+             '10.1016/j.biopsycho.2023.108725', '2024'),
+            ('The hidden cost of a smartphone: The effects of smartphone notifications on cognitive control from a behavioral and electrophysiological perspective',
+             '10.1371/journal.pone.0277220', '2022'),
+            ('iCreate: Social media use, divergent thinking, and real-life creative achievement',
+             '10.1037/tps0000306', '2022'),
+        ):
+            graph.append({
+                '@type': 'ScholarlyArticle', 'headline': headline,
+                'identifier': doi, 'url': 'https://doi.org/' + doi,
+                'datePublished': year, 'author': {'@id': person_id},
+                'isPartOf': {'@id': url + '#webpage'},
+            })
     if path not in ('/', '/contact/thanks/'):
         crumbs = [{'@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': SITE + '/'}]
         partial = ''
