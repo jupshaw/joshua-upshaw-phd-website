@@ -1,0 +1,19 @@
+/* Consent-first website measurement preferences */
+.analytics-consent[hidden]{display:none!important}
+.analytics-consent{position:fixed;left:18px;bottom:18px;z-index:1000;width:min(440px,calc(100vw - 36px));border:1px solid #53708e;border-radius:15px;padding:22px 23px;background:#13243e;color:#eaf3ff;box-shadow:0 25px 70px rgba(0,0,0,.48);font:400 .88rem/1.65 'Inter',sans-serif}
+.analytics-consent h2{margin:0 0 7px;color:#f4f9ff;font:600 1.22rem/1.3 'Playfair Display',Georgia,serif}
+.analytics-consent p{margin:0;color:#c4d2e5;font-size:.82rem;line-height:1.65}
+.analytics-consent a{color:#9adffd;text-decoration:underline;text-underline-offset:3px}
+.analytics-consent-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:17px}
+.analytics-consent-actions button{cursor:pointer;border:1px solid #568ab0;border-radius:8px;padding:10px 14px;font:650 .8rem 'Inter',sans-serif;color:#e6f5ff;background:#1e3b58}
+.analytics-consent-actions button[data-analytics-choice="accepted"]{background:#5fc6ed;border-color:#5fc6ed;color:#0a2033}
+.analytics-consent-actions button:hover{filter:brightness(1.12)}
+.analytics-consent-actions button:focus-visible,.analytics-settings:focus-visible{outline:3px solid #a1e7ff;outline-offset:3px}
+.analytics-settings{background:none;border:0;color:#bdd1e8;font:400 .8rem 'Inter',sans-serif;cursor:pointer;text-decoration:underline;text-underline-offset:3px;padding:1px 0}
+.analytics-settings:hover{color:#90ddf9}
+.privacy-article{max-width:850px;margin:0 auto;padding:70px 24px 90px}
+.privacy-article h1{font:600 clamp(2.3rem,4vw,3.4rem)/1.15 'Playfair Display',Georgia,serif;color:#f2f7ff;margin:12px 0 22px}
+.privacy-article h2{font:600 1.35rem/1.4 'Playfair Display',Georgia,serif;color:#fff;margin:35px 0 12px}
+.privacy-article p,.privacy-article li{font:.95rem/1.8 'Inter',sans-serif;color:#c7d8e8}
+.privacy-article a{color:#8cddfa;text-decoration:underline}
+@media(max-width:520px){.analytics-consent{left:10px;bottom:10px;width:calc(100vw - 20px);padding:18px}.analytics-consent-actions button{flex:1}}
