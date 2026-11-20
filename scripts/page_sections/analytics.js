@@ -1,8 +1,11 @@
-/* Optional, consent-first GA4. Google tag is never fetched before analytics consent. */
+/* Consent-first Google Tag Manager; GA4 gtag.js retained only as a fallback. */
 (() => {
   "use strict";
-  const id = document.body?.dataset.ga4Id || "";
-  if (!/^G-[A-Z0-9]{4,20}$/.test(id)) return;
+  const ga4Id = document.body?.dataset.ga4Id || "";
+  const containerId = document.body?.dataset.gtmId || "";
+  const useTagManager = /^GTM-[A-Z0-9]{6,15}$/.test(containerId);
+  const useGA4Fallback = !useTagManager && /^G-[A-Z0-9]{4,20}$/.test(ga4Id);
+  if (!useTagManager && !useGA4Fallback) return;
 
   const KEY = "jup_analytics_consent_v1";
   const banner = document.getElementById("analytics-consent");
@@ -35,14 +38,21 @@
     });
     window.gtag("consent", "update", { analytics_storage: "granted" });
     window.gtag("js", new Date());
-    window.gtag("config", id, {
-      page_location: location.origin + location.pathname,
-      allow_google_signals: false,
-      allow_ad_personalization_signals: false
-    });
     const tag = document.createElement("script");
     tag.async = true;
-    tag.src = "https://www.googletagmanager.com/gtag/js?id=" + encodeURIComponent(id);
+    if (useTagManager) {
+      // GTM needs the container startup event. Consent was granted before loading.
+      window.dataLayer.push({ "gtm.start": Date.now(), event: "gtm.js" });
+      tag.src = "https://www.googletagmanager.com/gtm.js?id=" + encodeURIComponent(containerId);
+    } else {
+      // Fallback for a future site that uses direct GA4 without GTM.
+      window.gtag("config", ga4Id, {
+        page_location: location.origin + location.pathname,
+        allow_google_signals: false,
+        allow_ad_personalization_signals: false
+      });
+      tag.src = "https://www.googletagmanager.com/gtag/js?id=" + encodeURIComponent(ga4Id);
+    }
     document.head.appendChild(tag);
   }
   function apply(value) {
@@ -88,7 +98,12 @@
           ["linkedin", "github", "scholar"].includes(parameters.destination)) {
         safeParams.destination = parameters.destination;
       }
-      window.gtag("event", eventName, safeParams);
+      if (useTagManager) {
+        // GTM Custom Event triggers can use these dataLayer event names.
+        window.dataLayer.push({ event: eventName, ...safeParams });
+      } else {
+        window.gtag("event", eventName, safeParams);
+      }
     }
   };
   for (const button of choices) {
