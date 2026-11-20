@@ -54,6 +54,7 @@
         return;
       }
       selectDuration(duration);
+      window.siteAnalytics?.track("meeting_duration_selected", { duration });
       requestPanel?.scrollIntoView({ behavior: reducedMotion ? 'instant' : 'smooth', block: 'start' });
     });
   });
