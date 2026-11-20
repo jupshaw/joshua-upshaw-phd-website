@@ -126,17 +126,28 @@ def test():
         errors.append('GTM consent-based loader missing')
     if 'src="https://www.googletagmanager.com/' in home:
         errors.append('Analytics tag must not load before user consent')
-    portrait=(OUT/'assets'/'joshua-upshaw-portrait.webp')
+    portrait=(OUT/'assets'/'joshua-upshaw-headshot.webp')
     if not portrait.is_file() or portrait.stat().st_size < 4000:
         errors.append('Homepage portrait asset missing')
     elif portrait.read_bytes()[:4] != b'RIFF' or portrait.read_bytes()[8:12] != b'WEBP':
         errors.append('Homepage portrait asset is not valid WebP')
-    if 'src="/assets/joshua-upshaw-portrait.webp"' not in home:
+    if 'src="/assets/joshua-upshaw-headshot.webp"' not in home:
         errors.append('Homepage does not display the uploaded portrait')
-    if 'alt="Joshua Upshaw, PhD, professional portrait"' not in home:
+    if 'alt="Joshua Upshaw, PhD, professional headshot"' not in home:
         errors.append('Homepage portrait accessible alt text missing')
     if '<div class="visual-center">J<span>U</span></div>' in home:
         errors.append('Homepage initials placeholder still visible')
+    about=(OUT/'about'/'index.html').read_text(encoding='utf-8')
+    research=(OUT/'research'/'index.html').read_text(encoding='utf-8')
+    images=('joshua-upshaw-headshot.webp','eeg-research-session.webp',
+            'eeg-cap-detail.webp','research-conference-presentation.webp')
+    for name in images:
+        if not (OUT/'assets'/name).is_file():
+            errors.append(f'Missing optimized image asset: {name}')
+    if 'eeg-research-session.webp' not in about or 'joshua-upshaw-headshot.webp' not in about:
+        errors.append('About page missing portrait or EEG research photo')
+    if 'eeg-cap-detail.webp' not in research or 'research-conference-presentation.webp' not in research:
+        errors.append('Research page missing laboratory or conference photo')
     if errors:
         print('FAIL\n'+'\n'.join(errors));return 1
     print(f'PASS: validated {len(pages)} HTML pages; no broken internal links.')
