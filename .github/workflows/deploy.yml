@@ -17,6 +17,7 @@ jobs:
       # Custom-domain deployment serves from the domain root, not the repository subpath.
       SITE_BASE_PATH: /
       SITE_GA4_MEASUREMENT_ID: ${{ vars.SITE_GA4_MEASUREMENT_ID }}
+      SITE_GTM_CONTAINER_ID: ${{ vars.SITE_GTM_CONTAINER_ID }}
       SITE_CONTACT_API_URL: ${{ vars.SITE_CONTACT_API_URL }}
       SITE_TURNSTILE_SITE_KEY: ${{ vars.SITE_TURNSTILE_SITE_KEY }}
     environment:
