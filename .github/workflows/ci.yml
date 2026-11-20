@@ -16,6 +16,25 @@ jobs:
           python-version: '3.12'
       - run: python3 scripts/build.py
       - run: python3 scripts/check_site.py
+      - name: Check privacy-gated analytics and structured data
+        env:
+          SITE_GA4_MEASUREMENT_ID: G-TEST1234
+        run: |
+          python3 scripts/build.py
+          python3 scripts/check_site.py
+          python3 - <<'PY'
+          from pathlib import Path
+          import json, re
+          home=Path("public/index.html").read_text(encoding="utf-8")
+          research=Path("public/research/index.html").read_text(encoding="utf-8")
+          assert 'data-ga4-id="G-TEST1234"' in home
+          assert 'data-analytics-choice="accepted"' in home
+          assert 'data-analytics-choice="declined"' in home
+          assert 'src="https://www.googletagmanager.com/gtag/js' not in home
+          schema=json.loads(re.search(r'<script type="application/ld\+json">(.*?)</script>',research).group(1))
+          assert len([x for x in schema["@graph"] if x["@type"]=="ScholarlyArticle"])==3
+          assert 'https://orcid.org/0000-0003-3119-9764' in research
+          PY
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
