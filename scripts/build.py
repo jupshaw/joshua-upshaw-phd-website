@@ -150,6 +150,19 @@ h1{letter-spacing:-.048em}a{transition:color .2s,background .2s,border-color .2s
 
 '''
 
+# Page-specific designs reconstructed from the five user-supplied Airo HTML captures.
+# Keep the original structured site generator, SEO metadata, and navigation.
+AIRO_PAGE_FILES = {
+    '/about/': 'about.html',
+    '/projects/': 'projects.html',
+    '/research/': 'research.html',
+    '/resume/': 'resume.html',
+    '/expertise/': 'expertise.html',
+}
+for route, filename in AIRO_PAGE_FILES.items():
+    PAGES[route]['content'] = (ROOT / 'scripts' / 'airo_pages' / filename).read_text(encoding='utf-8')
+CSS += '\\n' + (ROOT / 'scripts' / 'airo_pages' / 'styles.css').read_text(encoding='utf-8')
+
 JS = r'''(() => { const button=document.querySelector('[data-menu-toggle]'); const nav=document.getElementById('primary-nav'); if(button && nav){button.addEventListener('click',()=>{const open=button.getAttribute('aria-expanded')==='true';button.setAttribute('aria-expanded',String(!open));nav.classList.toggle('is-open',!open);});document.addEventListener('keydown',e=>{if(e.key==='Escape'){button.setAttribute('aria-expanded','false');nav.classList.remove('is-open');}});}const year=document.querySelector('[data-year]');if(year)year.textContent=String(new Date().getFullYear());})();'''
 
 FAVICON = '''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="g" x2="1" y2="1"><stop stop-color="#2c78dd"/><stop offset="1" stop-color="#9861e0"/></linearGradient></defs><rect width="64" height="64" rx="14" fill="#111d38"/><path d="M14 16h10v24c0 6-3 9-10 9v-9c1 0 2-.5 2-2V16zm17 0h10v19c0 4 2 6 5 6s5-2 5-6V16h10v20c0 9-6 15-15 15S31 45 31 36V16z" fill="url(#g)"/></svg>'''
