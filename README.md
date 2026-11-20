@@ -63,7 +63,7 @@ Build command: `python3 scripts/build.py`; output directory: `public`; no Node d
 
 The GitHub Actions workflow `.github/workflows/deploy.yml` builds and deploys `public/` after every push to `main`, or when manually run. In repository **Settings → Pages**, select **GitHub Actions** as the source.
 
-The deployment defaults to the preview base path `/joshua-upshaw-phd-website`. When moving to `joshuaupshawphd.com`, go to **Settings → Secrets and variables → Actions → Variables**, add repository variable `SITE_BASE_PATH` with the value `/`, and manually trigger **Actions → Deploy static site to GitHub Pages → Run workflow**. This rebuilds all links and asset paths for the custom-domain root. Removing the variable restores the default project preview path.
+The publishing workflow now sets `SITE_BASE_PATH: /` so generated assets and navigation use the root of `joshuaupshawphd.com`. No repository variable is necessary. Pushing to `main` automatically triggers an updated GitHub Pages deployment. If switching back to the repository-only GitHub Pages preview, set the workflow base path to `/joshua-upshaw-phd-website` before rebuilding.
 
 Set `joshuaupshawphd.com` as the **Custom domain** under repository **Settings → Pages**. Because this website uses a GitHub Actions publishing workflow, GitHub stores the custom domain in Pages settings; a `CNAME` file is not required or used for domain configuration.
 
@@ -77,7 +77,7 @@ At GoDaddy, edit the domain DNS zone:
 | A | @ | 185.199.111.153 |
 | CNAME | www | jupshaw.github.io |
 
-Replace conflicting prior website records, but do not change MX, SPF, DKIM, DMARC, domain verification, or other unrelated DNS records. After propagation, turn on **Enforce HTTPS** in the Pages settings. Optional, recommended: verify the domain first using the GitHub profile-level **Settings → Pages** TXT challenge. Keep the TXT record after verification.
+Replace conflicting prior website records, but do not change MX, SPF, DKIM, DMARC, domain verification, or other unrelated DNS records. In particular, remove any leftover GoDaddy apex (`@`) A record such as `160.153.0.12`; do not leave it alongside the four GitHub Pages A records. After propagation, turn on **Enforce HTTPS** in the Pages settings. Optional, recommended: verify the domain first using the GitHub profile-level **Settings → Pages** TXT challenge. Keep the TXT record after verification.
 
 Official documentation: [GitHub Pages custom domains](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site); [GitHub Pages domain verification](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/verifying-your-custom-domain-for-github-pages); [GoDaddy A records](https://www.godaddy.com/help/add-an-a-record-19238).
 
