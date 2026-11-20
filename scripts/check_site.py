@@ -5,6 +5,9 @@ from html.parser import HTMLParser
 from urllib.parse import urlsplit, unquote
 import sys
 import os
+import json
+import re
+from xml.etree import ElementTree as ET
 
 OUT=Path(__file__).resolve().parents[1]/'public'
 BASE_PATH=os.environ.get('SITE_BASE_PATH','').rstrip('/')
@@ -75,6 +78,48 @@ def test():
     script = (OUT / 'assets' / 'site.js').read_text(encoding='utf-8')
     if 'chicagoToday' not in script or 'validateDate' not in script or 'turnstile/v0/api.js' not in script:
         errors.append('meeting requests: missing Central Time date validation')
+    # Technical SEO / entity validation for every generated page.
+    descriptions=set()
+    for page in pages:
+        if page.name == '404.html':
+            continue
+        html=page.read_text(encoding='utf-8')
+        match=re.search(r'<script type="application/ld\\+json">(.*?)</script>',html)
+        if not match:
+            errors.append(f'{page}: missing structured JSON-LD')
+            continue
+        try:
+            graph=json.loads(match.group(1))['@graph']
+        except (ValueError, KeyError, TypeError):
+            errors.append(f'{page}: invalid entity JSON-LD')
+            continue
+        types={obj.get('@type') for obj in graph}
+        if not {'Person','WebSite'} <= types or not ({'WebPage','ProfilePage','CollectionPage'} & types):
+            errors.append(f'{page}: incomplete entity schema')
+        meta=re.search(r'<meta name="description" content="([^"]+)"',html)
+        if not meta or len(meta.group(1)) < 35:
+            errors.append(f'{page}: missing descriptive meta description')
+        elif meta.group(1) in descriptions:
+            errors.append(f'{page}: duplicate meta description')
+        elif meta: descriptions.add(meta.group(1))
+        if '<link rel="canonical" href="https://joshuaupshawphd.com/' not in html:
+            errors.append(f'{page}: missing canonical')
+        if 'href="/privacy/"' not in html:
+            errors.append(f'{page}: missing privacy link')
+    privacy=(OUT/'privacy'/'index.html')
+    if not privacy.exists():
+        errors.append('Privacy and analytics notice missing')
+    sitemap=ET.parse(OUT/'sitemap.xml')
+    urls=[x.text for x in sitemap.findall('.//{*}loc')]
+    if 'https://joshuaupshawphd.com/privacy/' not in urls:
+        errors.append('Sitemap missing privacy page')
+    if 'https://joshuaupshawphd.com/contact/thanks/' in urls:
+        errors.append('Confirmation page unexpectedly indexed')
+    home=(OUT/'index.html').read_text(encoding='utf-8')
+    if 'data-ga4-id="' not in home or 'data-analytics-settings' not in (OUT/'assets'/'site.js').read_text(encoding='utf-8'):
+        errors.append('Analytics consent-ready integration missing')
+    if 'src="https://www.googletagmanager.com/' in home:
+        errors.append('Analytics tag must not load before user consent')
     if errors:
         print('FAIL\n'+'\n'.join(errors));return 1
     print(f'PASS: validated {len(pages)} HTML pages; no broken internal links.')
