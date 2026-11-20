@@ -59,7 +59,7 @@ def test():
         'meeting selection 30': 'data-meeting-duration="30"',
         'meeting date field': 'id="meeting-date"',
         'meeting time field': 'id="meeting-time"',
-        'confirmation destination': 'https://joshuaupshawphd.com/contact/thanks/',
+        'submission feedback': 'class="contact-form-status"',
         'meeting request disclaimer': 'not a confirmed reservation',
     }.items():
         if needle not in contact:
