@@ -14,8 +14,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      # Set repository variable SITE_BASE_PATH to / when using a custom root domain.
-      SITE_BASE_PATH: ${{ vars.SITE_BASE_PATH || '/joshua-upshaw-phd-website' }}
+      # Custom-domain deployment serves from the domain root, not the repository subpath.
+      SITE_BASE_PATH: /
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -24,7 +24,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Build project-path preview
+      - name: Build custom-domain website
         run: python3 scripts/build.py
       - name: Validate preview links
         run: python3 scripts/check_site.py
