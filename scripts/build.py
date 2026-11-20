@@ -156,12 +156,21 @@ PAGE_SECTIONS = {
     '/research/': 'research.html',
     '/resume/': 'resume.html',
     '/expertise/': 'expertise.html',
+    '/contact/': 'contact.html',
 }
 for route, filename in PAGE_SECTIONS.items():
     PAGES[route]['content'] = (ROOT / 'scripts' / 'page_sections' / filename).read_text(encoding='utf-8')
 CSS += '\n' + (ROOT / 'scripts' / 'page_sections' / 'styles.css').read_text(encoding='utf-8')
+CSS += '\n' + (ROOT / 'scripts' / 'page_sections' / 'contact.css').read_text(encoding='utf-8')
+PAGES['/contact/thanks/'] = dict(
+    title='Message Submitted | Joshua Upshaw, PhD',
+    description='Confirmation of an inquiry or virtual meeting request submitted through the professional website.',
+    content=(ROOT / 'scripts' / 'page_sections' / 'contact-thanks.html').read_text(encoding='utf-8'),
+)
 
 JS = r'''(() => { const button=document.querySelector('[data-menu-toggle]'); const nav=document.getElementById('primary-nav'); if(button && nav){button.addEventListener('click',()=>{const open=button.getAttribute('aria-expanded')==='true';button.setAttribute('aria-expanded',String(!open));nav.classList.toggle('is-open',!open);});document.addEventListener('keydown',e=>{if(e.key==='Escape'){button.setAttribute('aria-expanded','false');nav.classList.remove('is-open');}});}const year=document.querySelector('[data-year]');if(year)year.textContent=String(new Date().getFullYear());})();'''
+
+JS += '\n' + (ROOT / 'scripts' / 'page_sections' / 'contact.js').read_text(encoding='utf-8')
 
 FAVICON = '''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="g" x2="1" y2="1"><stop stop-color="#2c78dd"/><stop offset="1" stop-color="#9861e0"/></linearGradient></defs><rect width="64" height="64" rx="14" fill="#111d38"/><path d="M14 16h10v24c0 6-3 9-10 9v-9c1 0 2-.5 2-2V16zm17 0h10v19c0 4 2 6 5 6s5-2 5-6V16h10v20c0 9-6 15-15 15S31 45 31 36V16z" fill="url(#g)"/></svg>'''
 
@@ -173,6 +182,8 @@ for path, d in PAGES.items():
     footer_links = ''.join(f'<a href="{href}">{label}</a>' for label,href in NAV)
     canonical = SITE+path
     html = f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>{escape(d['title'])}</title><meta name="description" content="{escape(d['description'])}"><meta name="theme-color" content="#0c172e"><link rel="canonical" href="{canonical}"><link rel="icon" type="image/svg+xml" href="/assets/favicon.svg"><link rel="stylesheet" href="/assets/styles.css"><meta property="og:type" content="website"><meta property="og:site_name" content="Joshua Upshaw, PhD"><meta property="og:title" content="{escape(d['title'])}"><meta property="og:description" content="{escape(d['description'])}"><meta property="og:url" content="{canonical}"><meta name="twitter:card" content="summary"><script type="application/ld+json">{json.dumps({'@context':'https://schema.org','@type':'Person','name':'Joshua Upshaw','honorificSuffix':'PhD','url':SITE,'sameAs':['https://www.linkedin.com/in/joshua-upshaw-ph-d/','https://scholar.google.com/citations?user=XAe-ESMAAAAJ&hl=en','https://github.com/jupshaw/joshua-upshaw-research-development-portfolio']},separators=(',',':'))}</script></head><body><a class="skip-link" href="#main">Skip to main content</a><header class="site-header"><div class="container header-row"><a class="brand" href="/" aria-label="Joshua Upshaw, PhD, home"><span class="brand-mark">JU</span>Joshua Upshaw, PhD</a><button type="button" class="menu-button" aria-expanded="false" aria-controls="primary-nav" aria-label="Toggle navigation" data-menu-toggle>☰</button><nav id="primary-nav" class="site-nav" aria-label="Primary navigation">{links}</nav></div></header><main id="main">{d['content']}</main><footer class="site-footer"><div class="container"><div class="footer-grid"><div><div class="footer-logo">Joshua Upshaw, PhD</div><p class="footer-desc">Scientific research, healthcare AI, and human-centered technology informed by evidence and built for impact.</p></div><nav class="footer-nav" aria-label="Footer navigation">{footer_links}</nav></div><div class="footer-bottom"><span>© <span data-year>2026</span> Joshua Upshaw. All rights reserved.</span><span>Research · Innovation · Human impact</span></div></div></footer><script src="/assets/site.js" defer></script></body></html>'''
+    if path == '/contact/thanks/':
+        html = html.replace('</head>', '<meta name="robots" content="noindex,follow"></head>', 1)
     # Respect project subpaths, e.g. GitHub Pages' /repo/ URL, without changing external links.
     if BASE_PATH:
         html = re.sub(r'(href|src)="/(?!/)', lambda m: m.group(1)+'="'+BASE_PATH+'/', html)
@@ -184,7 +195,7 @@ assets.mkdir(parents=True,exist_ok=True)
 (assets/'favicon.svg').write_text(FAVICON,encoding='utf-8')
 (OUT/'.nojekyll').write_text('',encoding='utf-8')
 (OUT/'robots.txt').write_text(f'User-agent: *\nAllow: /\nSitemap: {SITE}/sitemap.xml\n',encoding='utf-8')
-(OUT/'sitemap.xml').write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'+''.join(f'<url><loc>{SITE}{path}</loc></url>' for path in PAGES)+'</urlset>',encoding='utf-8')
+(OUT/'sitemap.xml').write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'+''.join(f'<url><loc>{SITE}{path}</loc></url>' for path in PAGES if path != '/contact/thanks/')+'</urlset>',encoding='utf-8')
 not_found = """<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Page not found | Joshua Upshaw</title><link rel="stylesheet" href="/assets/styles.css"><main class="container center-stack" style="padding:15vh 24px"><p class="eyebrow">404</p><h1>Page not found.</h1><p>This page may have moved. Continue browsing from the homepage.</p><a class="button secondary" href="/">Back to homepage</a></main></html>"""
 if BASE_PATH:
     not_found = re.sub(r'(href|src)="/(?!/)', lambda m: m.group(1)+'="'+BASE_PATH+'/',not_found)
