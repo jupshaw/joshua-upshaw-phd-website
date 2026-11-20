@@ -49,8 +49,11 @@ def test():
     contact = (OUT / 'contact' / 'index.html').read_text(encoding='utf-8')
     thanks = (OUT / 'contact' / 'thanks' / 'index.html').read_text(encoding='utf-8')
     for label, needle in {
-        'professional contact email': 'mailto:joshua@joshuaupshawphd.com',
-        'contact form endpoint': 'action="https://formsubmit.co/joshua@joshuaupshawphd.com"',
+        'professional contact email': 'mailto:contact@joshuaupshawphd.com',
+        'secure inquiry form': 'data-secure-form="inquiry"',
+        'secure meeting form': 'data-secure-form="meeting"',
+        'Turnstile configuration': 'data-turnstile-sitekey="',
+        'worker URL configuration': 'data-secure-contact-api="',
         'contact form field': 'id="inquiry-message"',
         'meeting selection 15': 'data-meeting-duration="15"',
         'meeting selection 30': 'data-meeting-duration="30"',
@@ -61,14 +64,16 @@ def test():
     }.items():
         if needle not in contact:
             errors.append(f'contact page: missing {label}')
-    if contact.count('action="https://formsubmit.co/joshua@joshuaupshawphd.com"') != 2:
-        errors.append('contact page: expected exactly two delivery forms')
+    if contact.count('data-secure-submit disabled') != 2:
+        errors.append('contact page: expected two disabled-by-default secure forms')
+    if 'formsubmit.co' in contact.lower():
+        errors.append('contact page: insecure third-party form endpoint remains')
     if 'jupshaw2010@gmail.com' in contact:
         errors.append('contact page: deprecated email address found')
     if '<meta name="robots" content="noindex,follow">' not in thanks:
         errors.append('contact confirmation: expected noindex directive')
     script = (OUT / 'assets' / 'site.js').read_text(encoding='utf-8')
-    if 'chicagoToday' not in script or 'validateDate' not in script:
+    if 'chicagoToday' not in script or 'validateDate' not in script or 'turnstile/v0/api.js' not in script:
         errors.append('meeting requests: missing Central Time date validation')
     if errors:
         print('FAIL\n'+'\n'.join(errors));return 1
