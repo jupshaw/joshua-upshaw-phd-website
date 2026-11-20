@@ -126,6 +126,17 @@ def test():
         errors.append('GTM consent-based loader missing')
     if 'src="https://www.googletagmanager.com/' in home:
         errors.append('Analytics tag must not load before user consent')
+    portrait=(OUT/'assets'/'joshua-upshaw-portrait.webp')
+    if not portrait.is_file() or portrait.stat().st_size < 4000:
+        errors.append('Homepage portrait asset missing')
+    elif portrait.read_bytes()[:4] != b'RIFF' or portrait.read_bytes()[8:12] != b'WEBP':
+        errors.append('Homepage portrait asset is not valid WebP')
+    if 'src="/assets/joshua-upshaw-portrait.webp"' not in home:
+        errors.append('Homepage does not display the uploaded portrait')
+    if 'alt="Joshua Upshaw, PhD, professional portrait"' not in home:
+        errors.append('Homepage portrait accessible alt text missing')
+    if '<div class="visual-center">J<span>U</span></div>' in home:
+        errors.append('Homepage initials placeholder still visible')
     if errors:
         print('FAIL\n'+'\n'.join(errors));return 1
     print(f'PASS: validated {len(pages)} HTML pages; no broken internal links.')

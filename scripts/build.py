@@ -44,7 +44,7 @@ def section_head(kicker, title, desc=''):
 PAGES = {}
 
 PAGES['/'] = dict(title='Joshua Upshaw, PhD | Cognitive Neuroscience, Healthcare AI & Product Leadership', description='Joshua Upshaw, PhD, combines cognitive neuroscience, clinical data science, and healthcare AI product leadership to turn complex challenges into evidence-driven solutions.', content=f'''
-<section class="hero dark-section"><div class="container hero-grid"><div class="hero-copy"><p class="eyebrow light hero-badge">PhD · Applied Cognitive Neuroscience</p><h1>Joshua <span class="gradient-text">Upshaw, PhD</span></h1><p class="hero-role">Cognitive Neuroscientist · Clinical Data Scientist · Healthcare AI &amp; Product Leader</p><p class="hero-lede">Advancing science. Building technology. Improving lives. I translate rigorous research and complex healthcare needs into evidence-driven decisions and practical innovation.</p><div class="button-group"><a class="button primary" href="/projects/">View My Work <span aria-hidden="true">↗</span></a><a class="button ghost" href="/resume/">View experience</a></div><div class="hero-credit">Joshua Upshaw, PhD <span class="dot"></span> Northwest Arkansas</div></div><div class="hero-visual" aria-hidden="true"><div class="visual-grid"></div><div class="signal-ring one"></div><div class="signal-ring two"></div><div class="signal-ring three"></div><div class="visual-center">J<span>U</span></div><div class="visual-caption">RESEARCH <span>×</span> TECHNOLOGY <span>×</span> PEOPLE</div></div></div></section>
+<section class="hero dark-section"><div class="container hero-grid"><div class="hero-copy"><p class="eyebrow light hero-badge">PhD · Applied Cognitive Neuroscience</p><h1>Joshua <span class="gradient-text">Upshaw, PhD</span></h1><p class="hero-role">Cognitive Neuroscientist · Clinical Data Scientist · Healthcare AI &amp; Product Leader</p><p class="hero-lede">Advancing science. Building technology. Improving lives. I translate rigorous research and complex healthcare needs into evidence-driven decisions and practical innovation.</p><div class="button-group"><a class="button primary" href="/projects/">View My Work <span aria-hidden="true">↗</span></a><a class="button ghost" href="/resume/">View experience</a></div><div class="hero-credit">Joshua Upshaw, PhD <span class="dot"></span> Northwest Arkansas</div></div><div class="hero-visual"><div class="visual-grid" aria-hidden="true"></div><div class="signal-ring one" aria-hidden="true"></div><div class="signal-ring two" aria-hidden="true"></div><div class="signal-ring three" aria-hidden="true"></div><div class="visual-center"><img src="/assets/joshua-upshaw-portrait.webp" alt="Joshua Upshaw, PhD, professional portrait" width="200" height="217" decoding="async" fetchpriority="high"></div><div class="visual-caption">RESEARCH <span>×</span> TECHNOLOGY <span>×</span> PEOPLE</div></div></div></section>
 <section class="stats-band"><div class="container metrics-grid">{metric('24,167','Patients in retrospective oncology research')}{metric('200K+','Authorization records analyzed')}{metric('$305K','NSF SBIR Phase I research award')}{metric('3','First-author peer-reviewed studies')}</div></section>
 <section class="section" id="approach"><div class="container split-intro"><div>{section_head('THE THROUGH-LINE','Rigorous research.<br/>Practical impact.')}</div><div class="intro-prose"><p>My work spans experimental cognitive neuroscience, clinical machine learning, and early-stage healthcare technology. The common thread is translating difficult problems into clear hypotheses, useful evidence, well-defined product decisions, and stronger systems.</p><p>From measuring attention with EEG and eye tracking to leading an NSF-funded oncology AI program, I combine hands-on execution with interdisciplinary leadership.</p><a class="text-link" href="/expertise/">How I work <span aria-hidden="true">↗</span></a></div></div></section>
 <section class="section section-tinted"><div class="container">{section_head('SELECTED PROJECTS','Evidence behind the work','Examples of scientific investigation, technical implementation, and research-to-product judgment.')}<div class="cards-grid">{card('Healthcare AI & Product Strategy','Leading oncology workflow discovery, research strategy, requirements, and responsible AI product development.','HEALTHCARE AI · LEADERSHIP','/projects/hidalga/','01 / 03')}{card('Clinical NLP & Prediction','Building a retrospective oncology research pipeline with evidence extraction, predictive modeling, and rigorous validation.','DATA SCIENCE · MACHINE LEARNING','/projects/clinical-ai/','02 / 03')}{card('Attention & Digital Distraction','Studying cognitive control through experimental EEG, behavioral measurement, and peer-reviewed research.','COGNITIVE NEUROSCIENCE','/projects/neuroscience/','03 / 03')}</div><div class="section-action"><a class="button secondary" href="/projects/">See all projects</a></div></div></section>
@@ -165,6 +165,30 @@ h1{letter-spacing:-.048em}a{transition:color .2s,background .2s,border-color .2s
 
 '''
 
+CSS += r'''
+/* Homepage portrait replaces the initials medallion while keeping the hero card. */
+.hero-visual .visual-center{
+  z-index:2;
+  width:232px;height:232px;
+  padding:0;letter-spacing:normal;
+  overflow:hidden;
+  border:2px solid rgba(126,212,255,.8);
+  background:radial-gradient(circle at 50% 24%,#315575,#151f39 85%);
+  box-shadow:0 0 0 8px rgba(90,173,230,.07),0 20px 65px rgba(0,0,0,.32);
+}
+.hero-visual .visual-center img{
+  display:block;width:100%;height:100%;
+  object-fit:cover;object-position:center 36%;
+  border-radius:inherit;
+}
+@media(max-width:1050px){
+  .hero-visual .visual-center{width:200px;height:200px}
+}
+@media(max-width:520px){
+  .hero-visual .visual-center{width:184px;height:184px}
+}
+'''
+
 # Modular inner-page content, loaded from version-controlled page sections.
 # Keep the original structured site generator, SEO metadata, and navigation.
 PAGE_SECTIONS = {
@@ -206,6 +230,7 @@ def structured_schema(path, page):
     person = {
         '@type': 'Person', '@id': person_id, 'name': 'Joshua Upshaw',
         'honorificSuffix': 'PhD', 'url': SITE + '/about/',
+        'image': SITE + '/assets/joshua-upshaw-portrait.webp',
         'description': 'Cognitive neuroscientist, healthcare AI founder and clinical data scientist.',
         'jobTitle': 'Cognitive neuroscientist and healthcare AI founder',
         'alumniOf': {'@type': 'CollegeOrUniversity', 'name': 'University of Arkansas'},
@@ -275,6 +300,8 @@ for path, d in PAGES.items():
     schema_json = structured_schema(path, d)
     consent_markup = '''<aside id="analytics-consent" class="analytics-consent" role="region" aria-labelledby="analytics-consent-title" hidden><h2 id="analytics-consent-title">Optional website analytics</h2><p>With your permission, this site uses Google Analytics to measure visits and improve the portfolio. You can change your choice at any time. <a href="/privacy/">Privacy details</a>.</p><div class="analytics-consent-actions"><button type="button" data-analytics-choice="declined">Decline</button><button type="button" data-analytics-choice="accepted">Allow analytics</button></div></aside>''' if (GA4_ID or GTM_CONTAINER_ID) else ''
     html = f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>{escape(d['title'])}</title><meta name="description" content="{escape(d['description'])}"><meta name="theme-color" content="#0c172e"><link rel="canonical" href="{canonical}"><link rel="icon" type="image/svg+xml" href="/assets/favicon.svg"><link rel="stylesheet" href="/assets/styles.css"><meta property="og:type" content="website"><meta property="og:site_name" content="Joshua Upshaw, PhD"><meta property="og:title" content="{escape(d['title'])}"><meta property="og:description" content="{escape(d['description'])}"><meta property="og:url" content="{canonical}"><meta name="twitter:card" content="summary"><script type="application/ld+json">{schema_json}</script></head><body data-ga4-id="{escape(GA4_ID, quote=True)}" data-gtm-id="{escape(GTM_CONTAINER_ID, quote=True)}"><a class="skip-link" href="#main">Skip to main content</a><header class="site-header"><div class="container header-row"><a class="brand" href="/" aria-label="Joshua Upshaw, PhD, home"><span class="brand-mark">JU</span>Joshua Upshaw, PhD</a><button type="button" class="menu-button" aria-expanded="false" aria-controls="primary-nav" aria-label="Toggle navigation" data-menu-toggle>☰</button><nav id="primary-nav" class="site-nav" aria-label="Primary navigation">{links}</nav></div></header><main id="main">{d['content']}</main><footer class="site-footer"><div class="container"><div class="footer-grid"><div><div class="footer-logo">Joshua Upshaw, PhD</div><p class="footer-desc">Scientific research, healthcare AI, and human-centered technology informed by evidence and built for impact.</p></div><nav class="footer-nav" aria-label="Footer navigation">{footer_links}</nav></div><div class="footer-bottom"><span>© <span data-year>2026</span> Joshua Upshaw. All rights reserved.</span><span>Research · Innovation · Human impact</span><span><a href="/privacy/">Privacy</a> {'<button type="button" class="analytics-settings" data-analytics-settings>Analytics preferences</button>' if GA4_ID else ''}</span></div></div></footer>{consent_markup}<script src="/assets/site.js" defer></script></body></html>'''
+    if path == '/':
+        html = html.replace('</head>', '<link rel="preload" as="image" type="image/webp" href="/assets/joshua-upshaw-portrait.webp"></head>', 1)
     if path == '/contact/':
         attrs = (' data-secure-contact-api="' + escape(CONTACT_API_URL, quote=True) + '"'
                  ' data-turnstile-sitekey="' + escape(TURNSTILE_SITE_KEY, quote=True) + '"')
@@ -290,6 +317,7 @@ assets.mkdir(parents=True,exist_ok=True)
 (assets/'styles.css').write_text(CSS,encoding='utf-8')
 (assets/'site.js').write_text(JS,encoding='utf-8')
 (assets/'favicon.svg').write_text(FAVICON,encoding='utf-8')
+(assets/'joshua-upshaw-portrait.webp').write_bytes((ROOT / 'scripts' / 'assets' / 'joshua-upshaw-portrait.webp').read_bytes())
 (OUT/'.nojekyll').write_text('',encoding='utf-8')
 (OUT/'robots.txt').write_text(f'User-agent: *\nAllow: /\nSitemap: {SITE}/sitemap.xml\n',encoding='utf-8')
 (OUT/'sitemap.xml').write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'+''.join(f'<url><loc>{SITE}{path}</loc></url>' for path in PAGES if path != '/contact/thanks/')+'</urlset>',encoding='utf-8')
