@@ -158,3 +158,39 @@ test("rejects out-of-range meeting dates before provider calls", async () => {
     assert.equal(mock.calls.length, 0);
   } finally { mock.restore(); }
 });
+
+test("delivers a valid weekday meeting request without creating a reservation", async () => {
+  const todayParts = new Intl.DateTimeFormat("en-US", {
+    timeZone: "America/Chicago", year: "numeric", month: "2-digit", day: "2-digit",
+  }).formatToParts(new Date());
+  const parts = Object.fromEntries(todayParts.map(p => [p.type, p.value]));
+  const day = new Date(Date.UTC(Number(parts.year), Number(parts.month) - 1, Number(parts.day) + 1));
+  while ([0, 6].includes(day.getUTCDay())) day.setUTCDate(day.getUTCDate() + 1);
+  const preferred = day.toISOString().slice(0, 10);
+  const mock = mockedProvider({ action: "contact_meeting" });
+  try {
+    const r = await worker.fetch(request({
+      type: "meeting", name: "Jane Example", email: "jane@example.org",
+      meeting_duration: "30 minutes", preferred_date: preferred,
+      preferred_start_time_central: "10:30", discussion_topic: "Please discuss research partnership.",
+      alternative_availability: "", website: "", turnstileToken: "test-turnstile-token",
+    }), environment());
+    assert.equal(r.status, 200);
+    const sent = mock.calls.find(x => x.url === "https://api.resend.com/emails");
+    assert.ok(sent);
+    const body = JSON.parse(sent.options.body);
+    assert.match(body.text, /Request only, not a confirmed reservation/);
+    assert.match(body.text, /America\/Chicago/);
+    assert.match(body.subject, /30 minutes/);
+  } finally { mock.restore(); }
+});
+
+test("rejects impossible future dates without throwing", async () => {
+  const r = await worker.fetch(request({
+    type: "meeting", name: "Jane Example", email: "jane@example.org",
+    meeting_duration: "30 minutes", preferred_date: "9999-99-99",
+    preferred_start_time_central: "10:00", discussion_topic: "Please discuss a research project.",
+    alternative_availability: "", website: "", turnstileToken: "test-turnstile-token",
+  }), environment());
+  assert.equal(r.status, 400);
+});
