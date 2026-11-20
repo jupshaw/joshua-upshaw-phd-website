@@ -14,7 +14,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      SITE_BASE_PATH: /joshua-upshaw-phd-website
+      # Set repository variable SITE_BASE_PATH to / when using a custom root domain.
+      SITE_BASE_PATH: ${{ vars.SITE_BASE_PATH || '/joshua-upshaw-phd-website' }}
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
