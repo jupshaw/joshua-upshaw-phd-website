@@ -5,11 +5,24 @@ from html import escape
 import json
 import os
 import re
+from urllib.parse import urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / 'public'
 SITE = 'https://joshuaupshawphd.com'
 BASE_PATH = os.environ.get('SITE_BASE_PATH','').rstrip('/')
+CONTACT_API_URL = os.environ.get('SITE_CONTACT_API_URL', '').strip()
+TURNSTILE_SITE_KEY = os.environ.get('SITE_TURNSTILE_SITE_KEY', '').strip()
+if bool(CONTACT_API_URL) != bool(TURNSTILE_SITE_KEY):
+    raise ValueError('Secure contact requires both a worker endpoint and a Turnstile site key')
+if CONTACT_API_URL:
+    api = urlsplit(CONTACT_API_URL)
+    if (api.scheme != 'https' or api.path != '/v1/contact' or
+            not (api.hostname == 'forms.joshuaupshawphd.com' or (api.hostname or '').endswith('.workers.dev')) or
+            api.query or api.fragment or api.username or api.password or
+            not re.fullmatch(r'[A-Za-z0-9_-]{15,128}', TURNSTILE_SITE_KEY)):
+        raise ValueError('Invalid secure form public configuration')
+
 NAV = [('Home','/'),('About','/about/'),('Projects','/projects/'),('Research','/research/'),('Resume','/resume/'),('Expertise','/expertise/'),('Contact','/contact/')]
 
 def card(title, desc, tag, href, extra=''):
@@ -171,6 +184,7 @@ PAGES['/contact/thanks/'] = dict(
 JS = r'''(() => { const button=document.querySelector('[data-menu-toggle]'); const nav=document.getElementById('primary-nav'); if(button && nav){button.addEventListener('click',()=>{const open=button.getAttribute('aria-expanded')==='true';button.setAttribute('aria-expanded',String(!open));nav.classList.toggle('is-open',!open);});document.addEventListener('keydown',e=>{if(e.key==='Escape'){button.setAttribute('aria-expanded','false');nav.classList.remove('is-open');}});}const year=document.querySelector('[data-year]');if(year)year.textContent=String(new Date().getFullYear());})();'''
 
 JS += '\n' + (ROOT / 'scripts' / 'page_sections' / 'contact.js').read_text(encoding='utf-8')
+JS += '\n' + (ROOT / 'scripts' / 'page_sections' / 'secure-contact.js').read_text(encoding='utf-8')
 
 FAVICON = '''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="g" x2="1" y2="1"><stop stop-color="#2c78dd"/><stop offset="1" stop-color="#9861e0"/></linearGradient></defs><rect width="64" height="64" rx="14" fill="#111d38"/><path d="M14 16h10v24c0 6-3 9-10 9v-9c1 0 2-.5 2-2V16zm17 0h10v19c0 4 2 6 5 6s5-2 5-6V16h10v20c0 9-6 15-15 15S31 45 31 36V16z" fill="url(#g)"/></svg>'''
 
@@ -182,6 +196,10 @@ for path, d in PAGES.items():
     footer_links = ''.join(f'<a href="{href}">{label}</a>' for label,href in NAV)
     canonical = SITE+path
     html = f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>{escape(d['title'])}</title><meta name="description" content="{escape(d['description'])}"><meta name="theme-color" content="#0c172e"><link rel="canonical" href="{canonical}"><link rel="icon" type="image/svg+xml" href="/assets/favicon.svg"><link rel="stylesheet" href="/assets/styles.css"><meta property="og:type" content="website"><meta property="og:site_name" content="Joshua Upshaw, PhD"><meta property="og:title" content="{escape(d['title'])}"><meta property="og:description" content="{escape(d['description'])}"><meta property="og:url" content="{canonical}"><meta name="twitter:card" content="summary"><script type="application/ld+json">{json.dumps({'@context':'https://schema.org','@type':'Person','name':'Joshua Upshaw','honorificSuffix':'PhD','url':SITE,'sameAs':['https://www.linkedin.com/in/joshua-upshaw-ph-d/','https://scholar.google.com/citations?user=XAe-ESMAAAAJ&hl=en','https://github.com/jupshaw/joshua-upshaw-research-development-portfolio']},separators=(',',':'))}</script></head><body><a class="skip-link" href="#main">Skip to main content</a><header class="site-header"><div class="container header-row"><a class="brand" href="/" aria-label="Joshua Upshaw, PhD, home"><span class="brand-mark">JU</span>Joshua Upshaw, PhD</a><button type="button" class="menu-button" aria-expanded="false" aria-controls="primary-nav" aria-label="Toggle navigation" data-menu-toggle>☰</button><nav id="primary-nav" class="site-nav" aria-label="Primary navigation">{links}</nav></div></header><main id="main">{d['content']}</main><footer class="site-footer"><div class="container"><div class="footer-grid"><div><div class="footer-logo">Joshua Upshaw, PhD</div><p class="footer-desc">Scientific research, healthcare AI, and human-centered technology informed by evidence and built for impact.</p></div><nav class="footer-nav" aria-label="Footer navigation">{footer_links}</nav></div><div class="footer-bottom"><span>© <span data-year>2026</span> Joshua Upshaw. All rights reserved.</span><span>Research · Innovation · Human impact</span></div></div></footer><script src="/assets/site.js" defer></script></body></html>'''
+    if path == '/contact/':
+        attrs = (' data-secure-contact-api="' + escape(CONTACT_API_URL, quote=True) + '"'
+                 ' data-turnstile-sitekey="' + escape(TURNSTILE_SITE_KEY, quote=True) + '"')
+        html = html.replace('<main id="main">', '<main id="main"' + attrs + '>', 1)
     if path == '/contact/thanks/':
         html = html.replace('</head>', '<meta name="robots" content="noindex,follow"></head>', 1)
     # Respect project subpaths, e.g. GitHub Pages' /repo/ URL, without changing external links.
