@@ -15,7 +15,7 @@
     <div class="contact-section-head"><div><p class="av-kicker">GET IN TOUCH</p><h2>Send a message</h2></div><p>Briefly share what you have in mind. I'll follow up by email.</p></div>
     <div class="contact-main-grid">
       <div class="contact-panel contact-form-panel">
-        <form class="contact-form" id="contact-inquiry-form">
+        <form class="contact-form" id="contact-inquiry-form" data-secure-form="inquiry">
           <input type="text" name="website" class="contact-honey" tabindex="-1" autocomplete="off" aria-hidden="true">
           <div class="contact-fields-two">
             <div class="contact-field"><label for="inquiry-name">Name <span aria-hidden="true">*</span></label><input id="inquiry-name" name="name" type="text" autocomplete="name" maxlength="120" placeholder="Your name" required></div>
@@ -62,7 +62,7 @@
       </div>
       <div class="contact-panel contact-booking-panel" id="request-meeting">
         <div class="contact-booking-heading"><div><p class="av-kicker">PREFERRED DATE & TIME</p><h3 id="meeting-form-heading">Request a 15-minute virtual meeting</h3></div><span class="contact-meeting-length" id="meeting-length-badge">15 MIN</span></div>
-        <form class="contact-form" id="meeting-request-form" aria-describedby="meeting-form-guidance">
+        <form class="contact-form" id="meeting-request-form" data-secure-form="meeting" aria-describedby="meeting-form-guidance">
           <input type="hidden" name="meeting_duration" value="15 minutes" id="meeting-duration-field">
           <input type="hidden" name="meeting_timezone" value="America/Chicago (US Central Time)">
           <input type="text" name="website" class="contact-honey" tabindex="-1" autocomplete="off" aria-hidden="true">
