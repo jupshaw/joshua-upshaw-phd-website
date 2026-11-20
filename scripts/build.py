@@ -161,7 +161,7 @@ AIRO_PAGE_FILES = {
 }
 for route, filename in AIRO_PAGE_FILES.items():
     PAGES[route]['content'] = (ROOT / 'scripts' / 'airo_pages' / filename).read_text(encoding='utf-8')
-CSS += '\\n' + (ROOT / 'scripts' / 'airo_pages' / 'styles.css').read_text(encoding='utf-8')
+CSS += '\n' + (ROOT / 'scripts' / 'airo_pages' / 'styles.css').read_text(encoding='utf-8')
 
 JS = r'''(() => { const button=document.querySelector('[data-menu-toggle]'); const nav=document.getElementById('primary-nav'); if(button && nav){button.addEventListener('click',()=>{const open=button.getAttribute('aria-expanded')==='true';button.setAttribute('aria-expanded',String(!open));nav.classList.toggle('is-open',!open);});document.addEventListener('keydown',e=>{if(e.key==='Escape'){button.setAttribute('aria-expanded','false');nav.classList.remove('is-open');}});}const year=document.querySelector('[data-year]');if(year)year.textContent=String(new Date().getFullYear());})();'''
 
