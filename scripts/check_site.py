@@ -116,8 +116,13 @@ def test():
     if 'https://joshuaupshawphd.com/contact/thanks/' in urls:
         errors.append('Confirmation page unexpectedly indexed')
     home=(OUT/'index.html').read_text(encoding='utf-8')
-    if 'data-ga4-id="' not in home or 'data-analytics-settings' not in (OUT/'assets'/'site.js').read_text(encoding='utf-8'):
+    script=(OUT/'assets'/'site.js').read_text(encoding='utf-8')
+    if 'data-ga4-id="' not in home or 'data-analytics-settings' not in script:
         errors.append('Analytics consent-ready integration missing')
+    if 'data-gtm-id="GTM-P84JWK5G"' not in home:
+        errors.append('Expected supplied GTM container configuration missing')
+    if 'googletagmanager.com/gtm.js?id=' not in script or 'useTagManager' not in script:
+        errors.append('GTM consent-based loader missing')
     if 'src="https://www.googletagmanager.com/' in home:
         errors.append('Analytics tag must not load before user consent')
     if errors:
