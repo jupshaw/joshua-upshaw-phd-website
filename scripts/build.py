@@ -7,6 +7,7 @@ import os
 import re
 from urllib.parse import urlsplit
 from zipfile import ZipFile
+from publish_insights import register_insights, article_schema
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / 'public'
@@ -31,7 +32,7 @@ if CONTACT_API_URL:
             not re.fullmatch(r'[A-Za-z0-9_-]{15,128}', TURNSTILE_SITE_KEY)):
         raise ValueError('Invalid secure form public configuration')
 
-NAV = [('Home','/'),('About','/about/'),('Projects','/projects/'),('Research','/research/'),('Resume','/resume/'),('Expertise','/expertise/'),('Contact','/contact/')]
+NAV = [('Home','/'),('About','/about/'),('Projects','/projects/'),('Research','/research/'),('Insights','/insights/'),('Resume','/resume/'),('Expertise','/expertise/'),('Contact','/contact/')]
 
 def card(title, desc, tag, href, extra=''):
     return f'''<a class="project-card" href="{href}"><div class="card-visual" aria-hidden="true"><span class="card-orbit"></span><span class="card-data">{extra}</span></div><div class="card-copy"><p class="eyebrow">{tag}</p><h3>{title}</h3><p>{desc}</p><span class="text-link">Explore case study <span aria-hidden="true">↗</span></span></div></a>'''
@@ -216,6 +217,9 @@ PAGES['/contact/thanks/'] = dict(
     content=(ROOT / 'scripts' / 'page_sections' / 'contact-thanks.html').read_text(encoding='utf-8'),
 )
 
+register_insights(ROOT, OUT, SITE, PAGES)
+CSS += '\n' + (ROOT / 'scripts' / 'page_sections' / 'insights.css').read_text(encoding='utf-8')
+
 JS = r'''(() => { const button=document.querySelector('[data-menu-toggle]'); const nav=document.getElementById('primary-nav'); if(button && nav){button.addEventListener('click',()=>{const open=button.getAttribute('aria-expanded')==='true';button.setAttribute('aria-expanded',String(!open));nav.classList.toggle('is-open',!open);});document.addEventListener('keydown',e=>{if(e.key==='Escape'){button.setAttribute('aria-expanded','false');nav.classList.remove('is-open');}});}const year=document.querySelector('[data-year]');if(year)year.textContent=String(new Date().getFullYear());})();'''
 
 JS += '\n' + (ROOT / 'scripts' / 'page_sections' / 'contact.js').read_text(encoding='utf-8')
@@ -250,7 +254,7 @@ def structured_schema(path, page):
         'publisher': {'@id': person_id},
     }
     page_type = 'ProfilePage' if path == '/about/' else (
-        'CollectionPage' if path in ('/projects/', '/research/') else 'WebPage')
+        'CollectionPage' if path in ('/projects/', '/research/') or page.get('collection') else 'WebPage')
     webpage = {
         '@type': page_type, '@id': url + '#webpage', 'url': url,
         'name': page['title'], 'description': page['description'],
@@ -260,6 +264,9 @@ def structured_schema(path, page):
     if path == '/about/':
         webpage['mainEntity'] = {'@id': person_id}
     graph = [person, site, webpage]
+    if page.get('article'):
+        graph.append(article_schema(page['article'], SITE))
+        webpage['mainEntity'] = {'@id': url + '#article'}
     if path == '/research/':
         # Verified first-author journal articles. The page links to each DOI.
         for headline, doi, year in (
@@ -301,6 +308,16 @@ for path, d in PAGES.items():
     schema_json = structured_schema(path, d)
     consent_markup = '''<aside id="analytics-consent" class="analytics-consent" role="region" aria-labelledby="analytics-consent-title" hidden><h2 id="analytics-consent-title">Optional website analytics</h2><p>With your permission, this site uses Google Analytics to measure visits and improve the portfolio. You can change your choice at any time. <a href="/privacy/">Privacy details</a>.</p><div class="analytics-consent-actions"><button type="button" data-analytics-choice="declined">Decline</button><button type="button" data-analytics-choice="accepted">Allow analytics</button></div></aside>''' if (GA4_ID or GTM_CONTAINER_ID) else ''
     html = f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>{escape(d['title'])}</title><meta name="description" content="{escape(d['description'])}"><meta name="theme-color" content="#0c172e"><link rel="canonical" href="{canonical}"><link rel="icon" type="image/svg+xml" href="/assets/favicon.svg"><link rel="stylesheet" href="/assets/styles.css"><meta property="og:type" content="website"><meta property="og:site_name" content="Joshua Upshaw, PhD"><meta property="og:title" content="{escape(d['title'])}"><meta property="og:description" content="{escape(d['description'])}"><meta property="og:url" content="{canonical}"><meta name="twitter:card" content="summary"><script type="application/ld+json">{schema_json}</script></head><body data-ga4-id="{escape(GA4_ID, quote=True)}" data-gtm-id="{escape(GTM_CONTAINER_ID, quote=True)}"><a class="skip-link" href="#main">Skip to main content</a><header class="site-header"><div class="container header-row"><a class="brand" href="/" aria-label="Joshua Upshaw, PhD, home"><span class="brand-mark">JU</span>Joshua Upshaw, PhD</a><button type="button" class="menu-button" aria-expanded="false" aria-controls="primary-nav" aria-label="Toggle navigation" data-menu-toggle>☰</button><nav id="primary-nav" class="site-nav" aria-label="Primary navigation">{links}</nav></div></header><main id="main">{d['content']}</main><footer class="site-footer"><div class="container"><div class="footer-grid"><div><div class="footer-logo">Joshua Upshaw, PhD</div><p class="footer-desc">Scientific research, healthcare AI, and human-centered technology informed by evidence and built for impact.</p></div><nav class="footer-nav" aria-label="Footer navigation">{footer_links}</nav></div><div class="footer-bottom"><span>© <span data-year>2026</span> Joshua Upshaw. All rights reserved.</span><span>Research · Innovation · Human impact</span><span><a href="/privacy/">Privacy</a> {'<button type="button" class="analytics-settings" data-analytics-settings>Analytics preferences</button>' if GA4_ID else ''}</span></div></div></footer>{consent_markup}<script src="/assets/site.js" defer></script></body></html>'''
+    html = html.replace('</head>', '<link rel="alternate" type="application/rss+xml" title="Research &amp; Insights" href="/insights/feed.xml"></head>', 1)
+    if d.get('article'):
+        entry = d['article']
+        html = html.replace('<meta property="og:type" content="website">', '<meta property="og:type" content="article">', 1)
+        extra = f'<meta property="article:published_time" content="{escape(entry["published"])}"><meta property="article:modified_time" content="{escape(entry["modified"])}">'
+        if entry.get('cover'):
+            image = escape(canonical + entry['cover'], quote=True)
+            extra += f'<meta property="og:image" content="{image}"><meta property="og:image:alt" content="{escape(entry["cover_alt"], quote=True)}"><meta name="twitter:image" content="{image}">'
+            html = html.replace('name="twitter:card" content="summary"', 'name="twitter:card" content="summary_large_image"', 1)
+        html = html.replace('</head>', extra + '</head>', 1)
     if path == '/':
         html = html.replace('</head>', '<link rel="preload" as="image" type="image/webp" href="/assets/joshua-upshaw-headshot.webp"></head>', 1)
     if path == '/contact/':
